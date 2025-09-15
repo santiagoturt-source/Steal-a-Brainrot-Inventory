@@ -381,4 +381,5 @@ if not df_view.empty:
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 else:
+
     st.info("Inventario vacío. Usa el formulario para agregar registros.")
