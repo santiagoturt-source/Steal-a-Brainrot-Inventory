@@ -7,6 +7,7 @@ import os, re, json
 # "Base de datos" en código (ejemplo)
 # =========================
 PERSONAJES = [
+    {"nombre": "Noobini Pizzanini",       "rareza": "Common",       "precio": 1},
     {"nombre": "Job Job Job Sahur",       "rareza": "Secret",       "precio": 700_000},
     {"nombre": "Blackhole Goat",          "rareza": "Secret",       "precio": 220_000},
     {"nombre": "Graipuss Medussi",        "rareza": "Secret",       "precio": 1_000_000},
@@ -383,3 +384,4 @@ if not df_view.empty:
 else:
 
     st.info("Inventario vacío. Usa el formulario para agregar registros.")
+
