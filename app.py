@@ -437,26 +437,32 @@ else:
                         st.success(f"Brainrot '{nombre}' agregado con total {format_num(total)}.")
                         st.rerun()
 
-                    # ----------------------------
-                    # Mostrar tabla
-                    # ----------------------------
                     if brainrots:
-                        df = pd.DataFrame(brainrots)
+    df = pd.DataFrame(brainrots)
 
-                        orden = st.selectbox("Ordenar por", ["Total ↓", "Total ↑", "Cuenta", "Brainrot"])
-                        if orden == "Total ↓":
-                            df = df.sort_values(by="Total", ascending=False)
-                        elif orden == "Total ↑":
-                            df = df.sort_values(by="Total", ascending=True)
-                        elif orden == "Cuenta":
-                            df = df.sort_values(by="Cuenta")
-                        elif orden == "Brainrot":
-                            df = df.sort_values(by="Brainrot")
+    orden = st.selectbox("Ordenar por", ["Total ↓", "Total ↑", "Cuenta", "Brainrot"])
+    if orden == "Total ↓":
+        df = df.sort_values(by="Total", ascending=False)
+    elif orden == "Total ↑":
+        df = df.sort_values(by="Total", ascending=True)
+    elif orden == "Cuenta":
+        df = df.sort_values(by="Cuenta")
+    elif orden == "Brainrot":
+        df = df.sort_values(by="Brainrot")
 
-                        df["Total"] = df["Total"].apply(format_num)
+    # 🔹 Aplicar formateo de números
+    df["Total"] = df["Total"].apply(format_num)
 
-                        df = df.drop(columns=["id"], errors="ignore")
-                        st.dataframe(df.reset_index(drop=True).style.hide(axis="index"), use_container_width=True)
+    # 🔹 Eliminar columna ID y reorganizar columnas
+    df = df.drop(columns=["id"], errors="ignore")
+    columnas = ["Total", "Brainrot", "Mutaciones", "Color", "Cuenta"]
+    df = df[columnas]
+
+    # 🔹 Mostrar tabla sin índices
+    st.dataframe(
+        df.style.hide(axis="index"),
+        use_container_width=True
+    )
 
                         # ----------------------------
                         # Borrar / Mover Brainrots
@@ -507,6 +513,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
