@@ -163,15 +163,6 @@ if "user" not in st.session_state:
 else:
     st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
 
-    # Botón de cerrar sesión (borra cookies también)
-    if st.button("🚪 Cerrar sesión"):
-        del st.session_state["user"]
-        cookies.pop("uid")
-        cookies.pop("email")
-        cookies.save()
-        st.success("Sesión cerrada.")
-        st.rerun()
-
     # ============================
     # PESTAÑAS PRINCIPALES
     # ============================
@@ -515,8 +506,12 @@ else:
             st.subheader("⚙️ Opciones")
             if st.button("🚪 Cerrar sesión"):
                 del st.session_state["user"]
+                cookies.pop("uid")
+                cookies.pop("email")
+                cookies.save()
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
