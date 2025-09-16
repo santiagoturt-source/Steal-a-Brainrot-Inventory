@@ -88,7 +88,32 @@ def save_data(uid, perfil, brainrots, cuentas):
 st.title("📒 Inventario de Brainrots")
 
 # Tabs de login/registro
-tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
+if "user" not in st.session_state:
+    tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
+
+    with tabs[0]:
+        email = st.text_input("Correo", key="login_email")
+        password = st.text_input("Contraseña", type="password", key="login_pass")
+        if st.button("Entrar"):
+            user = login(email, password)
+            if "error" in user:
+                st.error(user["error"]["message"])
+            else:
+                st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
+                st.success(f"Sesión iniciada: {user['email']}")
+                st.rerun()
+
+    with tabs[1]:
+        new_email = st.text_input("Correo nuevo", key="signup_email")
+        new_pass = st.text_input("Contraseña nueva", type="password", key="signup_pass")
+        if st.button("Crear cuenta"):
+            user = signup(new_email, new_pass)
+            if "error" in user:
+                st.error(user["error"]["message"])
+            else:
+                st.success(f"Cuenta creada: {new_email}. Ahora puedes iniciar sesión.")
+else:
+    st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
 
 # ----------------------------
 # TAB LOGIN
@@ -307,6 +332,7 @@ if "user" in st.session_state and st.session_state["user"]:
 
 else:
     st.warning("Debes iniciar sesión para ver tus perfiles.")
+
 
 
 
