@@ -20,13 +20,19 @@ WEB_API_KEY = st.secrets["firebase"]["api_key"]
 # FUNCIONES AUXILIARES
 # ============================
 
+from decimal import Decimal, ROUND_HALF_UP
+
 def format_num(num):
+    num = Decimal(str(num))  # usamos Decimal para precisión exacta
     if num >= 1_000_000_000:
-        return f"${num // 1_000_000_000}.{(num % 1_000_000_000) // 100_000_000}B"
+        val = (num / Decimal("1000000000")).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)
+        return f"${val}B"
     elif num >= 1_000_000:
-        return f"${num // 1_000_000}.{(num % 1_000_000) // 100_000}M"
+        val = (num / Decimal("1000000")).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)
+        return f"${val}M"
     elif num >= 1_000:
-        return f"${num // 1_000}.{(num % 1_000) // 100}K"
+        val = (num / Decimal("1000")).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)
+        return f"${val}K"
     else:
         return f"${num}"
 
@@ -455,6 +461,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
