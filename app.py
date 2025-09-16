@@ -110,7 +110,7 @@ from streamlit_cookies_manager import EncryptedCookieManager
 # ============================
 
 # Recuperar sesión desde query params si no existe en session_state
-query_params = st.experimental_get_query_params()
+query_params = st.query_params()
 if "user" not in st.session_state and "uid" in query_params and "email" in query_params:
     st.session_state["user"] = {
         "uid": query_params["uid"][0],
@@ -505,6 +505,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
