@@ -348,7 +348,7 @@ else:
 
                     COLORES = {
     "-": 0,
-    "🪙 Gold": 1.25,
+    "🟡 Gold": 1.25,
     "💎 Diamond": 1.5,
     "🩸 Bloodrot": 2,
     "🍬 Candy": 4,
@@ -481,6 +481,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
