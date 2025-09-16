@@ -170,9 +170,12 @@ else:
 # 🖥️ INTERFAZ LOGIN / SIGNUP
 # ============================
 
-if not load_session_token():
+if "user" not in st.session_state:
     tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
 
+    # ----------------------------
+    # 🔑 LOGIN
+    # ----------------------------
     with tabs[0]:
         email = st.text_input("Correo", key="login_email_input")
         password = st.text_input("Contraseña", type="password", key="login_pass_input")
@@ -181,19 +184,27 @@ if not load_session_token():
             if "error" in user:
                 st.error(user["error"]["message"])
             else:
-                save_session_token(user["localId"], user["email"])
-                st.success(f"Sesión iniciada: {user['email']}")
+                st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
+                st.success(f"✅ Sesión iniciada: {user['email']}")
                 st.rerun()
 
+    # ----------------------------
+    # 🆕 REGISTRO
+    # ----------------------------
     with tabs[1]:
         new_email = st.text_input("Correo nuevo", key="signup_email_input")
-        new_pass = st.text_input("Contraseña nueva", type="password", key="signup_pass_input", placeholder="Mínimo 6 caracteres")
+        new_pass = st.text_input(
+            "Contraseña nueva",
+            type="password",
+            key="signup_pass_input",
+            placeholder="Mínimo 6 caracteres"
+        )
         if st.button("Crear cuenta", key="signup_button"):
             user = signup(new_email, new_pass)
             if "error" in user:
                 st.error(user["error"]["message"])
             else:
-                st.success(f"Cuenta creada: {new_email}. Ahora puedes iniciar sesión.")
+                st.success(f"✅ Cuenta creada: {new_email}. Ahora puedes iniciar sesión.")
 
 else:
     st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
@@ -545,6 +556,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
