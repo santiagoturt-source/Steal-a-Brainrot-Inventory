@@ -106,9 +106,13 @@ st.title("📒 Inventario de Brainrots")
 # ============================
 # LOGIN / SIGNUP
 # ============================
+
 if "user" not in st.session_state:
     tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
 
+    # ----------------------------
+    # TAB LOGIN
+    # ----------------------------
     with tabs[0]:
         email = st.text_input("Correo", key="login_email_input")
         password = st.text_input("Contraseña", type="password", key="login_pass_input")
@@ -117,13 +121,22 @@ if "user" not in st.session_state:
             if "error" in user:
                 st.error(user["error"]["message"])
             else:
+                # ✅ Guardamos la sesión en st.session_state
                 st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
                 st.success(f"Sesión iniciada: {user['email']}")
                 st.rerun()
 
+    # ----------------------------
+    # TAB REGISTRO
+    # ----------------------------
     with tabs[1]:
         new_email = st.text_input("Correo nuevo", key="signup_email_input")
-        new_pass = st.text_input("Contraseña nueva", type="password", key="signup_pass_input", placeholder="Mínimo 6 caracteres")
+        new_pass = st.text_input(
+            "Contraseña nueva",
+            type="password",
+            key="signup_pass_input",
+            placeholder="Mínimo 6 caracteres"
+        )
         if st.button("Crear cuenta", key="signup_button"):
             user = signup(new_email, new_pass)
             if "error" in user:
@@ -132,7 +145,13 @@ if "user" not in st.session_state:
                 st.success(f"Cuenta creada: {new_email}. Ahora puedes iniciar sesión.")
 
 else:
+    # ✅ Si ya hay sesión iniciada
     st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
+
+    # Botón de cerrar sesión
+    if st.button("🚪 Cerrar sesión", key="logout_button"):
+        del st.session_state["user"]
+        st.rerun()
 
     # ============================
     # PESTAÑAS PRINCIPALES
@@ -479,6 +498,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
