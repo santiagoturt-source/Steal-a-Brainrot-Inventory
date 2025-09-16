@@ -453,7 +453,7 @@ else:
                             
                         df["Total"] = df["Total"].apply(format_num)
                         df = df.drop(columns=["id"], errors="ignore")
-                        columnas = ["Total", "Brainrot", "Mutaciones", "Color", "Cuenta"]
+                        columnas = ["Brainrot", "Total", "Cuenta", "Color", "Mutaciones"]
                         df = df[columnas]
                         
                         st.dataframe(
@@ -511,6 +511,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
