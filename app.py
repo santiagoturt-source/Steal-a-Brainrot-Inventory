@@ -6,7 +6,7 @@ import pandas as pd
 import uuid  # ✅ Para IDs únicos
 
 # ============================
-# 🔐 CONFIGURACIÓN FIREBASE
+# CONFIGURACIÓN FIREBASE
 # ============================
 
 if not firebase_admin._apps:
@@ -17,7 +17,7 @@ db = firestore.client()
 WEB_API_KEY = st.secrets["firebase"]["api_key"]
 
 # ============================
-# 📊 FUNCIONES AUXILIARES
+# FUNCIONES AUXILIARES
 # ============================
 
 def format_num(num):
@@ -40,7 +40,7 @@ def calcular_total(base, color_mult, mutaciones_mults):
     return total
 
 # ============================
-# 🔐 FUNCIONES DE AUTENTICACIÓN
+# FUNCIONES DE AUTENTICACIÓN
 # ============================
 
 def signup(email, password):
@@ -56,7 +56,7 @@ def login(email, password):
     return res.json()
 
 # ============================
-# 📦 FUNCIONES DE PERFILES
+# FUNCIONES DE PERFILES
 # ============================
 
 def list_profiles(uid):
@@ -90,7 +90,7 @@ def save_data(uid, perfil, brainrots, cuentas):
     })
 
 # ============================
-# 🎨 INTERFAZ STREAMLIT
+# INTERFAZ STREAMLIT
 # ============================
 
 st.title("📒 Inventario de Brainrots")
@@ -161,7 +161,7 @@ else:
                     st.rerun()
 
     # ============================
-    # 📦 INVENTARIO DE BRAINROTS
+    # INVENTARIO DE BRAINROTS
     # ============================
     with pestañas[1]:
         if "user" in st.session_state and st.session_state["user"]:
@@ -205,7 +205,7 @@ else:
                         "Trenozostruzo Turbo 3000": 225000,
                         "Blackhole Goat": 420000,
                         "La Vaca Saturno Saturnina": 300000,
-                        "Los Bombinitos": 550000,
+                        "Los Bombinitos": 220000,
                         "Sammyni Spyderini": 325000
                     }
 
@@ -244,11 +244,10 @@ else:
                         nombre = personaje.split(" — ")[0]
                         base = BRAINROTS[nombre]
 
-                        # ✅ Usamos la fórmula corregida
                         total = calcular_total(base, COLORES[color], [MUTACIONES[m] for m in mutaciones])
 
                         brainrots.append({
-                            "id": str(uuid.uuid4()),  # ✅ ID invisible
+                            "id": str(uuid.uuid4()),  # ID invisible
                             "Brainrot": nombre,
                             "Color": color,
                             "Mutaciones": mutaciones,
@@ -319,7 +318,7 @@ else:
                                 st.rerun()
 
     # ============================
-    # ⚙️ OPCIONES (CERRAR SESIÓN)
+    # ⚙OPCIONES (CERRAR SESIÓN)
     # ============================
     with pestañas[2]:
         with st.container(border=True):
@@ -328,6 +327,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
