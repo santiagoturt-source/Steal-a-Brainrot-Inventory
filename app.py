@@ -115,13 +115,14 @@ else:
     user = st.session_state["user"]
     st.sidebar.success(f"Conectado como {user['email']}")
 
-    # Solo listar perfiles si hay usuario logueado
+    perfil_actual = None  # valor por defecto
+
 if "user" in st.session_state and st.session_state["user"]:
     uid = st.session_state["user"]["uid"]
     perfiles = list_profiles(uid)
 
-    if perfiles:  # si existen perfiles en la BD
-        selected_profile = st.selectbox("Selecciona un perfil", perfiles)
+    if perfiles:
+        perfil_actual = st.selectbox("Selecciona un perfil", ["(ninguno)"] + perfiles)
     else:
         st.info("No tienes perfiles creados todavía.")
 else:
@@ -220,6 +221,7 @@ else:
         st.download_button("⬇️ Exportar Excel", export_excel(df),
                            file_name=f"{perfil_actual}.xlsx",
                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
 
 
 
