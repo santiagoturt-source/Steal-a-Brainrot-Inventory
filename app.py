@@ -309,6 +309,38 @@ else:
     "Karkerkar Kurkur": 300000,
     "Los Matteos": 300000,
     "Sammyni Spyderini": 325000,
+    "Tortuginni Dragonfrutini": 350000,
+    "Dul Dul Dul": 375000,
+    "Blackhole Goat": 400000,
+    "Chachechi": 400000,
+    "Agarrini la Palini": 425000,
+    "Los Spyderinis": 450000,
+    "Fragola La La La": 450000,
+    "Extinct Tralalero": 450000,
+    "Los Tralaleritos": 500000,
+    "Guerriro Digitale": 550000,
+    "Extinct Matteo": 625000,
+    "Las Tralaleritas": 650000,
+    "Job Job Job Sahur": 700000,
+    "Las Vaquitas Saturnitas": 750000,
+    "Graipuss Medussi": 1000000,
+    "Nooo My Hotspot": 1500000,
+    "Pot Hotspot": 2500000,
+    "Chicleteira Bicicleteira": 3500000,
+    "Los Nooo My Hotspotsitos": 5000000,
+    "La Grande Combinassion": 10000000,
+    "Los Combinassianos": 15000000,
+    "Nuclearo Dinosauro": 15000000,
+    "Los Hotposiotos": 20000000,
+    "La Extinct Grande": 23500000,
+    "Esok Sekolah": 30000000,
+    "Ketupat Kepat": 35000000,
+    "Los Bros": 37000000,
+    "La Supreme Combinassion": 40000000,
+    "Garama and Madundung": 50000000,
+    "Spaghetti Tualetti": 60000000,
+    "Dragon Cannonloni": 100000000,
+    "Strawberry Elephant": 250000000,
                 }
 
                 COLORES = {
@@ -434,6 +466,7 @@ else:
             st.session_state.pop("user", None)
             st.success("Sesión cerrada correctamente.")
             st.rerun()
+
 
 
 
