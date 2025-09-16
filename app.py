@@ -256,7 +256,25 @@ if "user" in st.session_state and st.session_state["user"]:
         # ----------------------------
 # Mostrar tabla y gestionar Brainrots
 # ----------------------------
+# ----------------------------
+# Mostrar tabla y gestionar Brainrots
+# ----------------------------
 if brainrots:
+    # Normalizar claves antiguas
+    for b in brainrots:
+        if "personaje" in b:
+            b["Brainrot"] = b.pop("personaje")
+        if "nombre" in b:
+            b["Brainrot"] = b.pop("nombre")
+        if "color" in b:
+            b["Color"] = b.pop("color")
+        if "mutaciones" in b:
+            b["Mutaciones"] = b.pop("mutaciones")
+        if "cuenta" in b:
+            b["Cuenta"] = b.pop("cuenta")
+        if "total" in b:
+            b["Total"] = b.pop("total")
+
     df = pd.DataFrame(brainrots)
 
     # Ordenamiento
@@ -274,16 +292,16 @@ if brainrots:
     df_vista = df.copy()
     df_vista["Total"] = df_vista["Total"].apply(format_num)
     st.markdown("### 📊 Inventario de Brainrots")
-    st.dataframe(df_vista[["Brainrot", "Color", "Mutaciones", "Total", "Cuenta"]].reset_index(drop=True), use_container_width=True)
+    st.dataframe(df_vista[["Brainrot", "Cuenta", "Total", "Color", "Mutaciones"]].reset_index(drop=True), use_container_width=True)
 
     # ----------------------------
     # Función para mostrar Brainrots en borrar/mover
     # ----------------------------
     def brainrot_label(b):
-        parts = [b["Brainrot"]]
-        parts.append(f"Total: {format_num(b['Total'])}")
+        parts = [b.get("Brainrot", "???")]
         if b.get("Cuenta") and b["Cuenta"] != "(ninguna)":
             parts.append(f"Cuenta: {b['Cuenta']}")
+        parts.append(f"Total: {format_num(b['Total'])}")
         if b.get("Color") and b["Color"] != "-":
             parts.append(f"Color: {b['Color']}")
         if b.get("Mutaciones"):
@@ -314,6 +332,7 @@ if brainrots:
         save_data(uid, perfil_actual, brainrots, cuentas)
         st.success(f"Brainrot '{personaje_sel}' movido a cuenta '{nueva_cuenta_sel}'.")
         st.rerun()
+
 
 
 
