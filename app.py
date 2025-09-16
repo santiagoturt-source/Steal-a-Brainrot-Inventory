@@ -124,8 +124,9 @@ with st.container(border=True):
     perfil_actual = None
     
     if "user" in st.session_state and st.session_state["user"]:
-    uid = st.session_state["user"]["uid"]
-    perfiles = list_profiles(uid)
+        uid = st.session_state["user"]["uid"]
+        
+        perfiles = list_profiles(uid)
 
     if perfiles:
         perfil_actual = st.selectbox("Selecciona un perfil", ["(ninguno)"] + perfiles)
@@ -303,6 +304,7 @@ with st.container(border=True):
 
 else:
     st.warning("Debes iniciar sesión para ver tus perfiles.")
+
 
 
 
