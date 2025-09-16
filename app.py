@@ -387,7 +387,7 @@ else:
                     MUTACIONES = {
     "🌧️ Rain": 1.5,
     "❄️ Snow": 2,
-    "🌮 Taco": 2,
+    "🌮 Taco": 3,
     "🛸 UFO": 3,
     "✨ Starfall": 3.5,
     "🦈 Shark Fin": 4,
@@ -511,6 +511,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
