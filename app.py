@@ -3,7 +3,6 @@ import pandas as pd
 import json
 import firebase_admin
 from firebase_admin import credentials, firestore
-import pyrebase
 
 # ---- CONFIGURACIÓN ----
 st.set_page_config(page_title="Inventario con Usuarios + Perfiles", layout="wide")
@@ -190,6 +189,7 @@ with st.container():
             st.rerun()
 
     st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 
