@@ -533,10 +533,12 @@ else:
     with pestañas[2]:
         with st.container(border=True):
             st.subheader("⚙️ Opciones")
-            if st.button("🚪 Cerrar sesión", key="logout_button"):
-                st.session_state.pop("user", None)
-                st.success("Sesión cerrada correctamente.")
-                st.rerun()
+            if "user" in st.session_state:
+                if st.button("🔒 Cerrar sesión", key="logout_button"):
+                    st.session_state.pop("user", None)  # Elimina la sesión
+                    st.success("Sesión cerrada correctamente.")
+                    st.rerun()  # 🔄 Fuerza recarga de la app -> vuelve al login
+
 
 
 
