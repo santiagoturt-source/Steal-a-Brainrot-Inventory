@@ -93,32 +93,43 @@ st.title("📒 Inventario de Brainrots")
 if "user" not in st.session_state:
     tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
 
-    with tabs[0]:
-        with st.container(border=True):
-            email = st.text_input("Correo", key="login_email_input")
-            password = st.text_input("Contraseña", type="password", key="login_pass_input")
-            if st.button("Entrar", key="login_button"):
-                user = login(email, password)
-                if "error" in user:
-                    st.error(user["error"]["message"])
-                else:
-                    st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
-                    st.success(f"Sesión iniciada: {user['email']}")
-                    st.rerun()
+    # ----------------------------
+# TAB LOGIN
+# ----------------------------
+with tabs[0]:
+    email = st.text_input("Correo", key="login_email_input", autocomplete="username")
+    password = st.text_input(
+        "Contraseña",
+        type="password",
+        key="login_pass_input",
+        autocomplete="current-password"  # ✅ Evita sugerencias de contraseña
+    )
+    if st.button("Entrar", key="login_button"):
+        user = login(email, password)
+        if "error" in user:
+            st.error(user["error"]["message"])
+        else:
+            st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
+            st.success(f"Sesión iniciada: {user['email']}")
+            st.rerun()
 
-    with tabs[1]:
-        with st.container(border=True):
-            new_email = st.text_input("Correo nuevo", key="signup_email_input")
-            new_pass = st.text_input("Contraseña nueva", type="password", key="signup_pass_input")
-            if st.button("Crear cuenta", key="signup_button"):
-                user = signup(new_email, new_pass)
-                if "error" in user:
-                    st.error(user["error"]["message"])
-                else:
-                    st.success(f"Cuenta creada: {new_email}. Ahora puedes iniciar sesión.")
-
-else:
-    st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
+# ----------------------------
+# TAB REGISTRO
+# ----------------------------
+with tabs[1]:
+    new_email = st.text_input("Correo nuevo", key="signup_email_input", autocomplete="username")
+    new_pass = st.text_input(
+        "Contraseña nueva",
+        type="password",
+        key="signup_pass_input",
+        autocomplete="new-password"  # ✅ Aquí sí permite sugerencias/recomendaciones
+    )
+    if st.button("Crear cuenta", key="signup_button"):
+        user = signup(new_email, new_pass)
+        if "error" in user:
+            st.error(user["error"]["message"])
+        else:
+            st.success(f"Cuenta creada: {new_email}. Ahora puedes iniciar sesión.")
 
     # ----------------------------
     # GESTIÓN DE PERFILES
@@ -319,6 +330,7 @@ if "user" in st.session_state and st.session_state["user"]:
             st.session_state.pop("user", None)  # eliminar usuario
             st.success("Sesión cerrada correctamente.")
             st.rerun()
+
 
 
 
