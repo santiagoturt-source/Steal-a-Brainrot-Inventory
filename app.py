@@ -118,6 +118,7 @@ else:
 # ----------------------------
 # GESTIÓN DE PERFILES
 # ----------------------------
+with st.container(border=True):
 st.subheader("👤 Gestión de Perfiles")
 
 perfil_actual = None
@@ -302,6 +303,7 @@ if "user" in st.session_state and st.session_state["user"]:
 
 else:
     st.warning("Debes iniciar sesión para ver tus perfiles.")
+
 
 
 
