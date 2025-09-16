@@ -1,6 +1,5 @@
-streamlit
-pandas
-openpyxl
-firebase-admin
-requests
-pyrebase4
+streamlit==1.37.1
+pandas==2.2.2
+openpyxl==3.1.5
+firebase-admin==6.5.0
+requests==2.31.0
