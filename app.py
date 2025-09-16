@@ -179,7 +179,7 @@ if "user" in st.session_state and st.session_state["user"]:
                 st.success(f"Cuenta '{cuenta_borrar}' borrada.")
                 st.rerun()
 
-        # ----------------------------
+               # ----------------------------
         # Agregar Brainrot
         # ----------------------------
         st.markdown("### ➕ Agregar Brainrot")
@@ -193,11 +193,29 @@ if "user" in st.session_state and st.session_state["user"]:
             "La Vaca Saturno Saturnina": 300000
         }
 
-        COLORES = ["-", "Gold", "Rainbow", "Galaxy", "Candy", "Diamond"]
-        MUTACIONES = [
-            "Taco", "Matteo Hat", "UFO", "Concert / Disco", "Bubblegum",
-            "Fire (Solar Flare)", "Glitch", "Crab Rave", "Nyan Cat", "Lightning"
-        ]
+        # Colores con multiplicadores
+        COLORES = {
+            "-": 0,
+            "Gold": 1.25,
+            "Rainbow": 10,
+            "Galaxy": 7,
+            "Candy": 4,
+            "Diamond": 17
+        }
+
+        # Mutaciones con multiplicadores
+        MUTACIONES = {
+            "Taco": 3,
+            "Matteo Hat": 4.5,
+            "UFO": 3,
+            "Concert / Disco": 5,
+            "Bubblegum": 4,
+            "Fire (Solar Flare)": 6,
+            "Glitch": 5,
+            "Crab Rave": 5,
+            "Nyan Cat": 6,
+            "Lightning": 6
+        }
 
         # Selección del Brainrot
         personaje = st.selectbox(
@@ -205,25 +223,33 @@ if "user" in st.session_state and st.session_state["user"]:
             ["(ninguno)"] + [f"{k} — {format_num(v)}" for k, v in BRAINROTS.items()]
         )
 
-        color = st.selectbox("Color", COLORES)
-        mutaciones = st.multiselect("Mutaciones", MUTACIONES, max_selections=5)
+        color = st.selectbox("Color", list(COLORES.keys()))
+        mutaciones = st.multiselect("Mutaciones", list(MUTACIONES.keys()), max_selections=5)
         cuenta_sel = st.selectbox("Cuenta", ["(ninguna)"] + cuentas)
 
         if st.button("Agregar") and personaje != "(ninguno)":
             # Extraer nombre limpio y valor base
             nombre = personaje.split(" — ")[0]
-            valor = BRAINROTS[nombre]
+            base = BRAINROTS[nombre]
+
+            # Calcular total
+            total = base
+            if color != "-":
+                total += base * COLORES[color]
+            for m in mutaciones:
+                total += base * MUTACIONES[m]
 
             brainrots.append({
                 "personaje": nombre,
                 "color": color,
                 "mutaciones": mutaciones,
                 "cuenta": cuenta_sel,
-                "total": valor
+                "total": total
             })
             save_data(uid, perfil_actual, brainrots, cuentas)
-            st.success(f"Brainrot '{nombre}' agregado con valor base {format_num(valor)}.")
+            st.success(f"Brainrot '{nombre}' agregado con total {format_num(total)}.")
             st.rerun()
+
 
         # ----------------------------
         # Mostrar tabla
@@ -283,6 +309,7 @@ if "user" in st.session_state and st.session_state["user"]:
 
 else:
     st.warning("Debes iniciar sesión para ver tus perfiles.")
+
 
 
 
