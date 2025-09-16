@@ -5,6 +5,29 @@ from firebase_admin import credentials, firestore
 import pandas as pd
 import uuid  # ✅ Para IDs únicos
 import time
+import os
+
+TOKEN_FILE = "session_token.json"
+
+def save_session_token(uid, email):
+    with open(TOKEN_FILE, "w") as f:
+        json.dump({"uid": uid, "email": email}, f)
+    st.session_state["user"] = {"uid": uid, "email": email}
+
+def load_session_token():
+    if "user" in st.session_state and st.session_state["user"]:
+        return True
+    if os.path.exists(TOKEN_FILE):
+        with open(TOKEN_FILE, "r") as f:
+            data = json.load(f)
+            st.session_state["user"] = data
+            return True
+    return False
+
+def clear_session_token():
+    if os.path.exists(TOKEN_FILE):
+        os.remove(TOKEN_FILE)
+    st.session_state["user"] = None
 
 # ============================
 # CONFIGURACIÓN FIREBASE
@@ -108,12 +131,9 @@ st.title("📒 Inventario de Brainrots")
 # 🖥️ INTERFAZ LOGIN / SIGNUP
 # ============================
 
-if "user" not in st.session_state:
+if not load_session_token():
     tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
 
-    # ----------------------------
-    # 🔑 LOGIN
-    # ----------------------------
     with tabs[0]:
         email = st.text_input("Correo", key="login_email_input")
         password = st.text_input("Contraseña", type="password", key="login_pass_input")
@@ -122,24 +142,13 @@ if "user" not in st.session_state:
             if "error" in user:
                 st.error(user["error"]["message"])
             else:
-                st.session_state["user"] = {
-                    "uid": user["localId"],
-                    "email": user["email"]
-                }
+                save_session_token(user["localId"], user["email"])
                 st.success(f"✅ Sesión iniciada: {user['email']}")
                 st.rerun()
 
-    # ----------------------------
-    # 🆕 REGISTRO
-    # ----------------------------
     with tabs[1]:
         new_email = st.text_input("Correo nuevo", key="signup_email_input")
-        new_pass = st.text_input(
-            "Contraseña nueva",
-            type="password",
-            key="signup_pass_input",
-            placeholder="Mínimo 6 caracteres"
-        )
+        new_pass = st.text_input("Contraseña nueva", type="password", key="signup_pass_input", placeholder="Mínimo 6 caracteres")
         if st.button("Crear cuenta", key="signup_button"):
             user = signup(new_email, new_pass)
             if "error" in user:
@@ -149,6 +158,7 @@ if "user" not in st.session_state:
 
 else:
     st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
+
 
     # ============================
     # PESTAÑAS PRINCIPALES
@@ -497,6 +507,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
