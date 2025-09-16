@@ -87,13 +87,7 @@ def save_data(uid, perfil, brainrots, cuentas):
 
 st.title("📒 Inventario de Brainrots")
 
-# ============================
-# LOGIN / REGISTRO
-# ============================
-if "user" not in st.session_state:
-    tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
-
-    # ----------------------------
+# ----------------------------
 # TAB LOGIN
 # ----------------------------
 with tabs[0]:
@@ -330,6 +324,7 @@ if "user" in st.session_state and st.session_state["user"]:
             st.session_state.pop("user", None)  # eliminar usuario
             st.success("Sesión cerrada correctamente.")
             st.rerun()
+
 
 
 
