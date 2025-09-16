@@ -1,7 +1,0 @@
-[theme]
-base="dark"
-primaryColor="#10b981"          # Verde
-backgroundColor="#0f172a"       # Azul oscuro
-secondaryBackgroundColor="#1e293b"  # Gris azulado
-textColor="#f1f5f9"             # Texto blanco
-font="sans serif"
