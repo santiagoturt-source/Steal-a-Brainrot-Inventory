@@ -356,17 +356,32 @@ else:
                     }
 
                     MUTACIONES = {
-                        "🌮 Taco": 3,
-                        "🎩 Matteo Hat": 4.5,
-                        "UFO": 3,
-                        "Concert / Disco": 5,
-                        "Bubblegum": 4,
-                        "Fire (Solar Flare)": 6,
-                        "Glitch": 5,
-                        "Crab Rave": 5,
-                        "Nyan Cat": 6,
-                        "Lightning": 6
-                    }
+    "🌧️ Rain": 1.5,
+    "❄️ Snow": 2,
+    "🌮 Taco": 2,
+    "🛸 UFO": 3,
+    "✨ Starfall": 3.5,
+    "🦈 Shark Fin": 3,
+    "🪐 Galactic (Saturnita)": 4,
+    "🍬 Bubblegum": 4,
+    "💣 Bombardiro": 4,
+    "🔟 10B": 4,
+    "🌈 Candy Aurora": 4,
+    "☠️ Extinct": 4,
+    "🎩 Matteo Hat": 4.5,
+    "🕷️ Spider (Spyderini)": 4.5,
+    "🥁 Tung Tung Attack": 5,
+    "🦀 Crab Rave": 5,
+    "🌐 Glitch": 5,
+    "🎶 Concert / Disco": 5,
+    "🇧🇷 BR Brazil": 5,
+    "🔥 Fire (Solar Flare)": 6,
+    "🐱 Nyan Cat": 6,
+    "🎆 4th of July Fireworks": 6,
+    "⚡ Lightning": 6,
+    "🍓 Strawberry": 8,
+    "⚙️ Rainbow Machine": 10
+}
 
                     personaje = st.selectbox(
                         "Selecciona un Brainrot",
@@ -464,6 +479,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
