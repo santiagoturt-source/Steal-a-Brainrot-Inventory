@@ -48,16 +48,6 @@ def login(email, password):
     return res.json()
 
 # ============================
-# 🔓 CERRAR SESIÓN
-# ============================
-with st.container(border=True):
-    st.markdown("### 🔓 Cerrar sesión")
-    if st.button("Cerrar sesión"):
-        st.session_state.pop("user", None)  # elimina el usuario
-        st.success("Sesión cerrada correctamente.")
-        st.rerun()
-
-# ============================
 # 📦 FUNCIONES DE PERFILES
 # ============================
 
@@ -317,6 +307,20 @@ else:
                     save_data(uid, perfil_actual, brainrots, cuentas)
                     st.success(f"Brainrot movido a cuenta '{nueva_cuenta_sel}'.")
                     st.rerun()
+
+
+# ============================
+# 🔓 CERRAR SESIÓN
+# ============================
+with st.container(border=True):
+    st.markdown("### 🔓 Cerrar sesión")
+    if st.button("Cerrar sesión"):
+        st.session_state.pop("user", None)  # elimina el usuario
+        st.success("Sesión cerrada correctamente.")
+        st.rerun()
+
+
+
 
 
 
