@@ -21,13 +21,12 @@ WEB_API_KEY = st.secrets["firebase"]["api_key"]
 # ============================
 
 def format_num(num):
-    """Formatea con abreviación truncada y símbolo de $"""
     if num >= 1_000_000_000:
-        return f"${int(num/1_000_000_000)}B"
+        return f"${num // 1_000_000_000}.{(num % 1_000_000_000) // 100_000_000}B"
     elif num >= 1_000_000:
-        return f"${int(num/1_000_000)}M"
+        return f"${num // 1_000_000}.{(num % 1_000_000) // 100_000}M"
     elif num >= 1_000:
-        return f"${int(num/1_000)}K"
+        return f"${num // 1_000}.{(num % 1_000) // 100}K"
     else:
         return f"${num}"
 
@@ -456,6 +455,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
