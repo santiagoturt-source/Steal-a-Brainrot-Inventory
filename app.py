@@ -198,9 +198,9 @@ else:
             # ----------------------------
             with st.container(border=True):
                 st.markdown("### ➕ Agregar Brainrot")
-
+                
                 BRAINROTS = {
-    "Noobini Pizzanini": "$1",
+                    "Noobini Pizzanini": "$1",
     "Lirlti Larilá": "$3",
     "Tim Cheese": "$5",
     "Flurlifura": "$7",
@@ -358,6 +358,7 @@ else:
             st.session_state.pop("user", None)
             st.success("Sesión cerrada correctamente.")
             st.rerun()
+
 
 
 
