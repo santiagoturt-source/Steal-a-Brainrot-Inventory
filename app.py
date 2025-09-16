@@ -84,7 +84,7 @@ def save_data(uid, perfil, brainrots, cuentas):
 # 🎨 INTERFAZ STREAMLIT
 # ============================
 
-st.title("📒 Inventario con Usuarios + Perfiles + Brainrots")
+st.title("📒 Inventario de Steal a Brainrot")
 
 # Tabs de login/registro
 tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
@@ -240,11 +240,11 @@ if "user" in st.session_state and st.session_state["user"]:
                 total += base * MUTACIONES[m]
 
             brainrots.append({
-                "personaje": nombre,
-                "color": color,
-                "mutaciones": mutaciones,
-                "cuenta": cuenta_sel,
-                "total": total
+                "Braintot": nombre,
+                "Color": color,
+                "Mutaciones": mutaciones,
+                "Cuenta": cuenta_sel,
+                "Total": total
             })
             save_data(uid, perfil_actual, brainrots, cuentas)
             st.success(f"Brainrot '{nombre}' agregado con total {format_num(total)}.")
@@ -310,6 +310,7 @@ if "user" in st.session_state and st.session_state["user"]:
 
 else:
     st.warning("Debes iniciar sesión para ver tus perfiles.")
+
 
 
 
