@@ -451,9 +451,8 @@ else:
                         elif orden == "Brainrot":
                             df = df.sort_values(by="Brainrot")
                             
-                            df["Total"] = df["Total"].apply(format_num)
-                            
-                    df = df.drop(columns=["id"], errors="ignore")}
+                        df["Total"] = df["Total"].apply(format_num)
+                        df = df.drop(columns=["id"], errors="ignore")
                         columnas = ["Total", "Brainrot", "Mutaciones", "Color", "Cuenta"]
                         df = df[columnas]
                         
@@ -512,6 +511,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
