@@ -200,41 +200,42 @@ else:
                 st.markdown("### ➕ Agregar Brainrot")
 
                 BRAINROTS = {
-                    "Noobini Pizzanini": 1,
-    "Lirlti Larilá": 3,
-    "Tim Cheese": 5,
-    "Flurlifura": 7,
-    "Talpa Di Fero": 9,
-    "Svinina Bombardino": 10,
-    "Raccooni Jandelini": 12,
-    "Pipi Kiwi": 13,
-    "Pipi Corni": 14,
-    "Trippi Troppi": 25,
-    "Tung Tung Tung Sahur": 25,
-    "Gangster Footera": 30,
-    "Bandito Bobritto": 35,
-    "Boneca Ambalabu": 40,
-    "Cacto Hipopotamo": 50,
-    "Ta Ta Ta Ta Sahur": 55,
-    "Tric Trac BaraBoom": 65,
-    "Pipi Avocado": 70,
-    "Cappuccino Assassino": 75,
-    "Brr Brr Patapim": 100,
-    "Avocadini Antilopini": 115,
-    "Bambini Crostini": 120,
-    "Trulimero Trulichina": 125,
-    "Bananita Dolphinita": 150,
-    "Perochollo Lemonchello": 160,
-    "Brri Brri Bicus Dicus Bombicus": 175,
-    "Avocadini Guffo": 225,
-    "Ti Ti Ti Sahur": 225,
-    "Salamino Penguino": 300,
-    "Penguino Cocosino": 300,
-    "Burbaloni Loiloli": 300,
-    "Chimpanzini Bananini": 300,
-    "Ballerina Cappuccina": 500,
-    "Chef Crabracadabra": 600
+    "Noobini Pizzanini": "$1",
+    "Lirlti Larilá": "$3",
+    "Tim Cheese": "$5",
+    "Flurlifura": "$7",
+    "Talpa Di Fero": "$9",
+    "Svinina Bombardino": "$10",
+    "Raccooni Jandelini": "$12",
+    "Pipi Kiwi": "$13",
+    "Pipi Corni": "$14",
+    "Trippi Troppi": "$25",
+    "Tung Tung Tung Sahur": "$25",
+    "Gangster Footera": "$30",
+    "Bandito Bobritto": "$35",
+    "Boneca Ambalabu": "$40",
+    "Cacto Hipopotamo": "$50",
+    "Ta Ta Ta Ta Sahur": "$55",
+    "Tric Trac BaraBoom": "$65",
+    "Pipi Avocado": "$70",
+    "Cappuccino Assassino": "$75",
+    "Brr Brr Patapim": "$100",
+    "Avocadini Antilopini": "$115",
+    "Bambini Crostini": "$120",
+    "Trulimero Trulichina": "$125",
+    "Bananita Dolphinita": "$150",
+    "Perochollo Lemonchello": "$160",
+    "Brri Brri Bicus Dicus Bombicus": "$175",
+    "Avocadini Guffo": "$225",
+    "Ti Ti Ti Sahur": "$225",
+    "Salamino Penguino": "$300",
+    "Penguino Cocosino": "$300",
+    "Burbaloni Loiloli": "$300",
+    "Chimpanzini Bananini": "$300",
+    "Ballerina Cappuccina": "$500",
+    "Chef Crabracadabra": "$600"
                 }
+
                     
 
                 COLORES = {
@@ -357,6 +358,7 @@ else:
             st.session_state.pop("user", None)
             st.success("Sesión cerrada correctamente.")
             st.rerun()
+
 
 
 
