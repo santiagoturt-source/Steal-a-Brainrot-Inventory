@@ -191,8 +191,6 @@ if not load_session_token():
 
 else:
     st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
-    if st.button("🚪 Cerrar sesión"):
-        clear_session()
 
     # ============================
     # PESTAÑAS PRINCIPALES
@@ -539,6 +537,7 @@ else:
                 st.session_state.pop("user", None)
                 st.success("Sesión cerrada correctamente.")
                 st.rerun()
+
 
 
 
