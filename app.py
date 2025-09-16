@@ -219,7 +219,7 @@ else:
                     }
 
                     MUTACIONES = {
-                        "Taco": 3,
+                        "🌮 Taco": 3,
                         "Matteo Hat": 4.5,
                         "UFO": 3,
                         "Concert / Disco": 5,
@@ -327,6 +327,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
