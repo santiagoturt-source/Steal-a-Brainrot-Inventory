@@ -15,8 +15,6 @@ def save_session_token(uid, email):
     st.session_state["user"] = {"uid": uid, "email": email}
 
 def load_session_token():
-    if "user" in st.session_state and st.session_state["user"]:
-        return True
     if os.path.exists(TOKEN_FILE):
         with open(TOKEN_FILE, "r") as f:
             data = json.load(f)
@@ -507,6 +505,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
