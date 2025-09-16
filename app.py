@@ -344,12 +344,14 @@ else:
                 }
 
                 COLORES = {
-                    "-": 0,
-                    "Gold": 1.25,
-                    "Rainbow": 10,
-                    "Galaxy": 7,
-                    "Candy": 4,
-                    "Diamond": 17
+                    "-": 1,          
+    "Gold": 1.25,
+    "Diamond": 1.5,
+    "Bloodrot": 2,
+    "Candy": 4,
+    "Lava": 6,
+    "Galaxy": 7,
+    "Rainbow": 10
                 }
 
                 MUTACIONES = {
@@ -466,6 +468,7 @@ else:
             st.session_state.pop("user", None)
             st.success("Sesión cerrada correctamente.")
             st.rerun()
+
 
 
 
