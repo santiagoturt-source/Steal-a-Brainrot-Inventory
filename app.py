@@ -197,6 +197,7 @@ else:
                     # ----------------------------
                     # Agregar Brainrot
                     # ----------------------------
+                with st.container(border=True):
                     st.markdown("### ➕ Agregar Brainrot")
 
                     BRAINROTS = {
@@ -455,6 +456,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
