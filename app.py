@@ -92,9 +92,9 @@ if "user" not in st.session_state:
     tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
 
     with tabs[0]:
-        email = st.text_input("Correo", key="login_email")
-        password = st.text_input("Contraseña", type="password", key="login_pass")
-        if st.button("Entrar"):
+        email = st.text_input("Correo", key="login_email_input")
+        password = st.text_input("Contraseña", type="password", key="login_pass_input")
+        if st.button("Entrar", key="login_button"):
             user = login(email, password)
             if "error" in user:
                 st.error(user["error"]["message"])
@@ -104,9 +104,9 @@ if "user" not in st.session_state:
                 st.rerun()
 
     with tabs[1]:
-        new_email = st.text_input("Correo nuevo", key="signup_email")
-        new_pass = st.text_input("Contraseña nueva", type="password", key="signup_pass")
-        if st.button("Crear cuenta"):
+        new_email = st.text_input("Correo nuevo", key="signup_email_input")
+        new_pass = st.text_input("Contraseña nueva", type="password", key="signup_pass_input")
+        if st.button("Crear cuenta", key="signup_button"):
             user = signup(new_email, new_pass)
             if "error" in user:
                 st.error(user["error"]["message"])
@@ -114,6 +114,7 @@ if "user" not in st.session_state:
                 st.success(f"Cuenta creada: {new_email}. Ahora puedes iniciar sesión.")
 else:
     st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
+
 
 # ----------------------------
 # TAB LOGIN
@@ -332,6 +333,7 @@ if "user" in st.session_state and st.session_state["user"]:
 
 else:
     st.warning("Debes iniciar sesión para ver tus perfiles.")
+
 
 
 
