@@ -390,7 +390,7 @@ else:
     "🌮 Taco": 2,
     "🛸 UFO": 3,
     "✨ Starfall": 3.5,
-    "🦈 Shark Fin": 3,
+    "🦈 Shark Fin": 4,
     "🪐 Galactic (Saturnita)": 4,
     "🍬 Bubblegum": 4,
     "💣 Bombardiro": 4,
@@ -511,6 +511,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
