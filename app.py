@@ -395,13 +395,18 @@ else:
                     nombre = personaje.split(" — ")[0]
                     base = BRAINROTS[nombre]
 
-                    total = base
-                    
-                    if color != "-":
-                        total *= COLORES[color]
-                        
-                    for m in mutaciones:
-                        total *= MUTACIONES[m]
+                    # Calculamos el multiplicador total
+multiplicador = 1.0  
+
+if color != "-":
+    multiplicador += COLORES[color]
+
+for m in mutaciones:
+    multiplicador += MUTACIONES[m]
+
+# Total final
+total = base * multiplicador
+
 
 
                     brainrots.append({
@@ -483,6 +488,7 @@ else:
             st.session_state.pop("user", None)
             st.success("Sesión cerrada correctamente.")
             st.rerun()
+
 
 
 
