@@ -9,7 +9,7 @@ from io import BytesIO
 # ================================
 # CONFIGURACIÓN FIREBASE
 # ================================
-WEB_API_KEY = "AIzaSyCBxG7b99_CRXVQ5PpV0miBXWV5U3RStN4"   # <-- reemplaza con tu apiKey de Firebase Web
+WEB_API_KEY = st.secrets["firebase"]["api_key"]   # <-- reemplaza con tu apiKey de Firebase Web
 
 if not firebase_admin._apps:
     cred = credentials.Certificate(dict(st.secrets["FIREBASE_KEY"]))
@@ -211,6 +211,7 @@ else:
         st.download_button("⬇️ Exportar Excel", export_excel(df),
                            file_name=f"{perfil_actual}.xlsx",
                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
 
 
 
