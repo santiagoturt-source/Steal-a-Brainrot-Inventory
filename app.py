@@ -179,7 +179,7 @@ if "user" in st.session_state and st.session_state["user"]:
                 st.success(f"Cuenta '{cuenta_borrar}' borrada.")
                 st.rerun()
 
-               # ----------------------------
+        # ----------------------------
         # Agregar Brainrot
         # ----------------------------
         st.markdown("### ➕ Agregar Brainrot")
@@ -271,18 +271,19 @@ if "user" in st.session_state and st.session_state["user"]:
             st.dataframe(df.reset_index(drop=True), use_container_width=True)
 
             # ----------------------------
-            # Opciones de borrar/mover
+            # Función para mostrar Brainrots en borrar/mover
             # ----------------------------
             def brainrot_label(b):
                 parts = [b["personaje"]]
+                parts.append(f"Total: {format_num(b['total'])}")
                 if b.get("cuenta") and b["cuenta"] != "(ninguna)":
-                    parts.append(f"[{b['cuenta']}]")
+                    parts.append(f"Cuenta: {b['cuenta']}")
                 if b.get("color") and b["color"] != "-":
                     parts.append(f"Color: {b['color']}")
                 if b.get("mutaciones"):
                     parts.append(f"Mutaciones: {', '.join(b['mutaciones'])}")
-                parts.append(f"Total: {format_num(b['total'])}")
                 return " | ".join(parts)
+
 
             opciones_brainrots = ["(ninguno)"] + [brainrot_label(b) for b in brainrots]
 
@@ -309,6 +310,7 @@ if "user" in st.session_state and st.session_state["user"]:
 
 else:
     st.warning("Debes iniciar sesión para ver tus perfiles.")
+
 
 
 
