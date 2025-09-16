@@ -168,7 +168,7 @@ else:
             if perfil_actual and perfil_actual != "(ninguno)":
                 brainrots, cuentas = load_data(uid, perfil_actual)
 
-                    st.subheader(f"📦 Inventario — Perfil: {perfil_actual}")
+                st.subheader(f"📦 Inventario — Perfil: {perfil_actual}")
 
                     # ----------------------------
                     # Gestión de cuentas
@@ -456,6 +456,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
