@@ -496,7 +496,7 @@ else:
                                 st.success(f"Brainrot movido a cuenta '{nueva_cuenta_sel}'.")
                                 st.rerun()
                                 
-    with pestañas[2]:
+with pestañas[2]:
     with st.container(border=True):
         st.subheader("⚙️ Opciones")
 
@@ -509,6 +509,7 @@ else:
                 st.session_state.pop("user", None)
                 st.success("✅ Sesión cerrada correctamente.")
                 st.rerun()
+
 
 
 
