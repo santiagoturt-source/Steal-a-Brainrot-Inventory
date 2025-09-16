@@ -294,7 +294,24 @@ if brainrots:
     st.markdown("### 📊 Inventario de Brainrots")
     st.dataframe(df_vista[["Brainrot", "Cuenta", "Total", "Color", "Mutaciones"]].reset_index(drop=True), use_container_width=True)
 
-    # ----------------------------
+# Función para formatear brainrots en el selector
+def brainrot_label(b):
+    nombre = b.get("Brainrot", "???")
+    cuenta = b.get("Cuenta", "(ninguna)")
+    total = format_num(b.get("Total", 0))
+    color = b.get("Color", "-")
+    mutaciones = ", ".join(b.get("Mutaciones", [])) if b.get("Mutaciones") else ""
+
+    parts = [f"{nombre}", f"Cuenta: {cuenta}", f"Total: {total}"]
+    if color and color != "-":
+        parts.append(f"Color: {color}")
+    if mutaciones:
+        parts.append(f"Mutaciones: {mutaciones}")
+
+    return " | ".join(parts)
+
+
+# ----------------------------
 # Borrar / Mover Brainrots
 # ----------------------------
 st.markdown("### 🗑️🔄 Borrar / Mover Brainrots")
@@ -313,7 +330,7 @@ if st.button("🗑️ Borrar Brainrot") and to_delete != "(ninguno)":
 # Mover
 mover = st.selectbox("Selecciona un Brainrot para mover", opciones_brainrots)
 nueva_cuenta_sel = st.selectbox("Mover a cuenta", ["(ninguna)"] + cuentas)
-if st.button("🔄 Mover Brainrot") and mover != "(ninguno)" and nueva_cuenta_sel != "(ninguna)":
+if st.button("🔄 Mover Brainrot") and mover != "(ninguno)" and nueva_cuenta_sel != "(ninguno)":
     personaje_sel = mover.split(" | ")[0]
     for b in brainrots:
         if b.get("Brainrot", "???") == personaje_sel:
@@ -321,6 +338,7 @@ if st.button("🔄 Mover Brainrot") and mover != "(ninguno)" and nueva_cuenta_se
     save_data(uid, perfil_actual, brainrots, cuentas)
     st.success(f"Brainrot '{personaje_sel}' movido a cuenta '{nueva_cuenta_sel}'.")
     st.rerun()
+
 
 
 
