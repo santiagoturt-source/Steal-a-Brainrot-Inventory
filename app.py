@@ -340,10 +340,13 @@ else:
                     base = BRAINROTS[nombre]
 
                     total = base
+                    
                     if color != "-":
-                        total += base * COLORES[color]
+                        total *= COLORES[color]
+                        
                     for m in mutaciones:
-                        total += base * MUTACIONES[m]
+                        total *= MUTACIONES[m]
+
 
                     brainrots.append({
                         "id": str(uuid.uuid4()),  # ✅ ID invisible
@@ -424,6 +427,7 @@ else:
             st.session_state.pop("user", None)
             st.success("Sesión cerrada correctamente.")
             st.rerun()
+
 
 
 
