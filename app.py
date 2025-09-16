@@ -183,22 +183,46 @@ if "user" in st.session_state and st.session_state["user"]:
         # Agregar Brainrot
         # ----------------------------
         st.markdown("### ➕ Agregar Brainrot")
-        personaje = st.text_input("Nombre del Brainrot")
-        color = st.text_input("Color", value="-")
-        mutaciones = st.text_area("Mutaciones (separadas por coma)")
-        cuenta_sel = st.selectbox("Cuenta", ["(ninguna)"] + cuentas)
-        total = st.number_input("Valor base", min_value=0, step=1000)
 
-        if st.button("Agregar"):
+        # Lista fija de Brainrots con valores base
+        BRAINROTS = {
+            "Graipuss Medussi": 150000,
+            "Job Job Job Sahur": 8293023,
+            "Trenozostruzo Turbo 3000": 225000,
+            "Blackhole Goat": 420000,
+            "La Vaca Saturno Saturnina": 300000
+        }
+
+        COLORES = ["-", "Gold", "Rainbow", "Galaxy", "Candy", "Diamond"]
+        MUTACIONES = [
+            "Taco", "Matteo Hat", "UFO", "Concert / Disco", "Bubblegum",
+            "Fire (Solar Flare)", "Glitch", "Crab Rave", "Nyan Cat", "Lightning"
+        ]
+
+        # Selección del Brainrot
+        personaje = st.selectbox(
+            "Selecciona un Brainrot",
+            ["(ninguno)"] + [f"{k} — {format_num(v)}" for k, v in BRAINROTS.items()]
+        )
+
+        color = st.selectbox("Color", COLORES)
+        mutaciones = st.multiselect("Mutaciones", MUTACIONES, max_selections=5)
+        cuenta_sel = st.selectbox("Cuenta", ["(ninguna)"] + cuentas)
+
+        if st.button("Agregar") and personaje != "(ninguno)":
+            # Extraer nombre limpio y valor base
+            nombre = personaje.split(" — ")[0]
+            valor = BRAINROTS[nombre]
+
             brainrots.append({
-                "personaje": personaje,
+                "personaje": nombre,
                 "color": color,
-                "mutaciones": [m.strip() for m in mutaciones.split(",") if m.strip()],
+                "mutaciones": mutaciones,
                 "cuenta": cuenta_sel,
-                "total": total
+                "total": valor
             })
             save_data(uid, perfil_actual, brainrots, cuentas)
-            st.success(f"Brainrot '{personaje}' agregado.")
+            st.success(f"Brainrot '{nombre}' agregado con valor base {format_num(valor)}.")
             st.rerun()
 
         # ----------------------------
@@ -259,6 +283,7 @@ if "user" in st.session_state and st.session_state["user"]:
 
 else:
     st.warning("Debes iniciar sesión para ver tus perfiles.")
+
 
 
 
