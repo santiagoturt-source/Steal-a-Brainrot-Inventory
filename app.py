@@ -240,11 +240,11 @@ if "user" in st.session_state and st.session_state["user"]:
                 total += base * MUTACIONES[m]
 
             brainrots.append({
-                "Braintot": nombre,
-                "Color": color,
-                "Mutaciones": mutaciones,
-                "Cuenta": cuenta_sel,
-                "Total": total
+                "nombre": nombre,
+                "color": color,
+                "mutaciones": mutaciones,
+                "cuenta": cuenta_sel,
+                "total": total
             })
             save_data(uid, perfil_actual, brainrots, cuentas)
             st.success(f"Brainrot '{nombre}' agregado con total {format_num(total)}.")
@@ -310,6 +310,7 @@ if "user" in st.session_state and st.session_state["user"]:
 
 else:
     st.warning("Debes iniciar sesión para ver tus perfiles.")
+
 
 
 
