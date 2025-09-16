@@ -83,7 +83,7 @@ def save_data(uid, perfil, brainrots, cuentas):
     })
 
 # ============================
-# 📚 BASE DE DATOS BRAINROTS
+# 📚 BASE DE DATOS
 # ============================
 
 BRAINROTS = {
@@ -268,9 +268,6 @@ MUTACIONES = {
 
 st.title("📒 Inventario de Brainrots")
 
-# ----------------------------
-# LOGIN/REGISTRO
-# ----------------------------
 if "user" not in st.session_state:
     tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
 
@@ -299,13 +296,11 @@ if "user" not in st.session_state:
 else:
     st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
 
-    # ----------------------------
-    # GESTIÓN DE PERFILES
-    # ----------------------------
-    st.subheader("👤 Gestión de Perfiles")
     uid = st.session_state["user"]["uid"]
-    perfil_actual = None
     perfiles = list_profiles(uid)
+
+    st.subheader("👤 Gestión de Perfiles")
+    perfil_actual = None
 
     if perfiles:
         perfil_actual = st.selectbox("Selecciona un perfil", ["(ninguno)"] + perfiles)
@@ -325,16 +320,13 @@ else:
             st.success(f"Perfil '{perfil_actual}' borrado.")
             st.rerun()
 
-        # ============================
-        # 📦 INVENTARIO DE BRAINROTS
-        # ============================
         brainrots, cuentas = load_data(uid, perfil_actual)
 
         st.subheader(f"📦 Inventario — Perfil: {perfil_actual}")
 
-        # ----------------------------
+        # ============================
         # Agregar Brainrot
-        # ----------------------------
+        # ============================
         personaje = st.selectbox(
             "Selecciona un Brainrot",
             ["(ninguno)"] + [f"{k} — {format_num(v)}" for k, v in BRAINROTS.items()]
@@ -348,7 +340,6 @@ else:
             nombre = personaje.split(" — ")[0]
             base = BRAINROTS[nombre]
 
-            # Fórmula CORRECTA
             multiplicador = 1.0
             if color != "-":
                 multiplicador += COLORES[color]
@@ -369,21 +360,56 @@ else:
             st.success(f"Brainrot '{nombre}' agregado con total {format_num(total)}.")
             st.rerun()
 
-        # ----------------------------
+        # ============================
         # Mostrar tabla
-        # ----------------------------
+        # ============================
         if brainrots:
             df = pd.DataFrame(brainrots)
             df["Total"] = df["Total"].apply(format_num)
             df = df.drop(columns=["id"], errors="ignore")
             st.dataframe(df.reset_index(drop=True).style.hide(axis="index"), use_container_width=True)
 
-        # ----------------------------
-        # Botón de cerrar sesión
-        # ----------------------------
-        if st.button("🚪 Cerrar sesión"):
-            del st.session_state["user"]
-            st.rerun()
+            # ============================
+            # Borrar / Mover Brainrots
+            # ============================
+            st.markdown("### 🗑️ 🔄 Borrar / Mover Brainrots")
+
+            def brainrot_label(b):
+                parts = [f"{b['Brainrot']}", f"Cuenta: {b['Cuenta']}", f"Total: {format_num(b['Total'])}"]
+                if b.get("Color") and b["Color"] != "-":
+                    parts.append(f"Color: {b['Color']}")
+                if b.get("Mutaciones"):
+                    parts.append(f"Mutaciones: {', '.join(b['Mutaciones'])}")
+                return " | ".join(parts), b["id"]
+
+            opciones_brainrots = ["(ninguno)"] + [brainrot_label(b)[0] for b in brainrots]
+            ids_map = {brainrot_label(b)[0]: brainrot_label(b)[1] for b in brainrots}
+
+            to_delete = st.selectbox("Selecciona un Brainrot para borrar", opciones_brainrots)
+            if st.button("🗑️ Borrar Brainrot") and to_delete != "(ninguno)":
+                brainrot_id = ids_map[to_delete]
+                brainrots = [b for b in brainrots if b["id"] != brainrot_id]
+                save_data(uid, perfil_actual, brainrots, cuentas)
+                st.success("Brainrot borrado.")
+                st.rerun()
+
+            mover = st.selectbox("Selecciona un Brainrot para mover", opciones_brainrots)
+            nueva_cuenta_sel = st.text_input("Mover a cuenta", "(ninguna)")
+            if st.button("🔄 Mover Brainrot") and mover != "(ninguno)" and nueva_cuenta_sel != "(ninguna)":
+                brainrot_id = ids_map[mover]
+                for b in brainrots:
+                    if b["id"] == brainrot_id:
+                        b["Cuenta"] = nueva_cuenta_sel
+                save_data(uid, perfil_actual, brainrots, cuentas)
+                st.success(f"Brainrot movido a cuenta '{nueva_cuenta_sel}'.")
+                st.rerun()
+
+    # ============================
+    # Botón de cerrar sesión
+    # ============================
+    if st.button("🚪 Cerrar sesión"):
+        del st.session_state["user"]
+        st.rerun()
 
 
 
