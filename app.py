@@ -31,35 +31,38 @@ def login(email, password):
     return requests.post(url, data=payload).json()
 
 # ============================
-# 📦 FUNCIONES DE PERFILES E INVENTARIO
+# 📦 FUNCIONES DE PERFILES / CUENTAS / BRAINROTS
 # ============================
 
 def list_profiles(uid):
-    try:
-        col = db.collection("perfiles").document(uid).collection("data").stream()
-        return [doc.id for doc in col]
-    except:
-        return []
+    col = db.collection("perfiles").document(uid).collection("data").stream()
+    return [doc.id for doc in col]
 
 def create_profile(uid, name):
-    db.collection("perfiles").document(uid).collection("data").document(name).set({"inventario": []})
+    db.collection("perfiles").document(uid).collection("data").document(name).set({"cuentas": []})
 
 def delete_profile(uid, name):
     db.collection("perfiles").document(uid).collection("data").document(name).delete()
 
-def load_inventory(uid, perfil):
+def list_accounts(uid, perfil):
     doc = db.collection("perfiles").document(uid).collection("data").document(perfil).get()
-    return doc.to_dict().get("inventario", []) if doc.exists else []
+    return doc.to_dict().get("cuentas", []) if doc.exists else []
 
-def save_inventory(uid, perfil, inventario):
-    db.collection("perfiles").document(uid).collection("data").document(perfil).update({"inventario": inventario})
+def save_accounts(uid, perfil, cuentas):
+    db.collection("perfiles").document(uid).collection("data").document(perfil).update({"cuentas": cuentas})
+
+def load_brainrots(uid, perfil, cuenta):
+    doc = db.collection("perfiles").document(uid).collection("data").document(perfil).collection("cuentas").document(cuenta).get()
+    return doc.to_dict().get("brainrots", []) if doc.exists else []
+
+def save_brainrots(uid, perfil, cuenta, brainrots):
+    db.collection("perfiles").document(uid).collection("data").document(perfil).collection("cuentas").document(cuenta).set({"brainrots": brainrots})
 
 # ============================
 # 📊 DATOS DE REFERENCIA
 # ============================
 
-# Ejemplo de lista de personajes, colores y mutaciones
-PERSONAJES = {
+BRAINROTS = {
     "Job Job Job Sahur": 700000,
     "Graipuss Medussi": 1000000,
     "Trenozostruzo Turbo 3000": 150000
@@ -84,7 +87,7 @@ MUTACIONES = {
 # 🎨 INTERFAZ STREAMLIT
 # ============================
 
-st.title("📒 Inventario con Usuarios + Perfiles + Personajes")
+st.title("🧠 Inventario de Brainrots — Usuarios + Perfiles + Cuentas")
 
 # Tabs de login/registro
 tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
@@ -119,11 +122,12 @@ with tabs[1]:
             st.success(f"Cuenta creada: {new_email}. Ahora puedes iniciar sesión.")
 
 # ----------------------------
-# GESTIÓN DE PERFILES
+# GESTIÓN DE PERFILES Y CUENTAS
 # ----------------------------
-st.subheader("👤 Gestión de Perfiles")
+st.subheader("👤 Gestión de Perfiles y Cuentas")
 
 perfil_actual = None
+cuenta_actual = None
 
 if "user" in st.session_state and st.session_state["user"]:
     uid = st.session_state["user"]["uid"]
@@ -147,58 +151,75 @@ if "user" in st.session_state and st.session_state["user"]:
             st.success(f"Perfil '{perfil_actual}' borrado.")
             st.rerun()
 
-    # ----------------------------
-    # INVENTARIO DE PERSONAJES
-    # ----------------------------
-    if perfil_actual and perfil_actual != "(ninguno)":
-        st.subheader(f"🎮 Inventario — Perfil: {perfil_actual}")
+        # ----------------------------
+        # CUENTAS DENTRO DEL PERFIL
+        # ----------------------------
+        cuentas = list_accounts(uid, perfil_actual)
+        cuenta_actual = st.selectbox("Selecciona una cuenta", ["(ninguna)"] + cuentas)
 
-        inventario = load_inventory(uid, perfil_actual)
-
-        # Formulario para añadir personaje
-        with st.form("add_character"):
-            personaje = st.selectbox("Personaje", list(PERSONAJES.keys()))
-            color = st.selectbox("Color", list(COLORES.keys()))
-            mutaciones = st.multiselect("Mutaciones", list(MUTACIONES.keys()))
-            cuenta = st.text_input("Cuenta", "Cuenta 1")
-            submitted = st.form_submit_button("Agregar")
-
-            if submitted:
-                base = PERSONAJES[personaje]
-                total = base * COLORES[color] if color in COLORES else base
-                for m in mutaciones:
-                    total += base * MUTACIONES[m]
-
-                nuevo = {
-                    "personaje": personaje,
-                    "color": color,
-                    "mutaciones": mutaciones,
-                    "cuenta": cuenta,
-                    "total": total
-                }
-                inventario.append(nuevo)
-                save_inventory(uid, perfil_actual, inventario)
-                st.success(f"{personaje} agregado con total {total:,}")
+        nueva_cuenta = st.text_input("Nombre de nueva cuenta")
+        if st.button("➕ Crear cuenta"):
+            if nueva_cuenta and nueva_cuenta not in cuentas:
+                cuentas.append(nueva_cuenta)
+                save_accounts(uid, perfil_actual, cuentas)
+                st.success(f"Cuenta '{nueva_cuenta}' creada.")
                 st.rerun()
 
-        # Mostrar inventario
-        if inventario:
-            df = pd.DataFrame(inventario)
+        if cuenta_actual and cuenta_actual != "(ninguna)":
+            if st.button(f"🗑️ Borrar cuenta '{cuenta_actual}'"):
+                cuentas = [c for c in cuentas if c != cuenta_actual]
+                save_accounts(uid, perfil_actual, cuentas)
+                db.collection("perfiles").document(uid).collection("data").document(perfil_actual).collection("cuentas").document(cuenta_actual).delete()
+                st.success(f"Cuenta '{cuenta_actual}' borrada.")
+                st.rerun()
 
-            orden = st.selectbox("Ordenar por", ["Total ↓", "Total ↑", "Cuenta", "Personaje"])
-            if orden == "Total ↓":
-                df = df.sort_values(by="total", ascending=False)
-            elif orden == "Total ↑":
-                df = df.sort_values(by="total", ascending=True)
-            elif orden == "Cuenta":
-                df = df.sort_values(by="cuenta")
-            elif orden == "Personaje":
-                df = df.sort_values(by="personaje")
+            # ----------------------------
+            # BRAINROTS EN LA CUENTA
+            # ----------------------------
+            st.subheader(f"🧠 Brainrots en {cuenta_actual}")
 
-            st.dataframe(df, use_container_width=True)
+            brainrots = load_brainrots(uid, perfil_actual, cuenta_actual)
+
+            # Formulario para añadir Brainrot
+            with st.form("add_brainrot"):
+                personaje = st.selectbox("Brainrot", list(BRAINROTS.keys()))
+                color = st.selectbox("Color", list(COLORES.keys()))
+                mutaciones = st.multiselect("Mutaciones", list(MUTACIONES.keys()))
+                submitted = st.form_submit_button("Agregar")
+
+                if submitted:
+                    base = BRAINROTS[personaje]
+                    total = base * COLORES[color] if color in COLORES else base
+                    for m in mutaciones:
+                        total += base * MUTACIONES[m]
+
+                    nuevo = {
+                        "personaje": personaje,
+                        "color": color,
+                        "mutaciones": mutaciones,
+                        "total": total
+                    }
+                    brainrots.append(nuevo)
+                    save_brainrots(uid, perfil_actual, cuenta_actual, brainrots)
+                    st.success(f"{personaje} agregado con total {total:,}")
+                    st.rerun()
+
+            # Mostrar y borrar brainrots
+            if brainrots:
+                df = pd.DataFrame(brainrots)
+                st.dataframe(df, use_container_width=True)
+
+                to_delete = st.selectbox("Selecciona un Brainrot para borrar", ["(ninguno)"] + [b["personaje"] for b in brainrots])
+                if st.button("🗑️ Borrar Brainrot") and to_delete != "(ninguno)":
+                    brainrots = [b for b in brainrots if b["personaje"] != to_delete]
+                    save_brainrots(uid, perfil_actual, cuenta_actual, brainrots)
+                    st.success(f"Brainrot '{to_delete}' borrado.")
+                    st.rerun()
 
 else:
-    st.warning("Debes iniciar sesión para ver tus perfiles e inventario.")
+    st.warning("Debes iniciar sesión para ver tus perfiles, cuentas y brainrots.")
+
+
 
 
 
