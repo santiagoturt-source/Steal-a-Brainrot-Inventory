@@ -20,18 +20,15 @@ WEB_API_KEY = st.secrets["firebase"]["api_key"]
 # 📊 FUNCIONES AUXILIARES
 # ============================
 
-def format_money(num):
-    return f"${num:,}"
-
 def format_num(num):
     if num >= 1_000_000_000:
-        return f"{num/1_000_000_000:.1f}B"
+        return f"${num/1_000_000_000:.1f}B"
     elif num >= 1_000_000:
-        return f"{num/1_000_000:.1f}M"
+        return f"${num/1_000_000:.1f}M"
     elif num >= 1_000:
-        return f"{num/1_000:.1f}K"
+        return f"${num/1_000:.1f}K"
     else:
-        return str(num)
+        return f"${num}"
 
 # ============================
 # 🔐 FUNCIONES DE AUTENTICACIÓN
@@ -330,6 +327,7 @@ else:
             st.session_state.pop("user", None)
             st.success("Sesión cerrada correctamente.")
             st.rerun()
+
 
 
 
