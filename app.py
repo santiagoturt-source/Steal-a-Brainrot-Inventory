@@ -497,17 +497,22 @@ else:
                                 st.rerun()
 
     # ============================
-    # ⚙OPCIONES (CERRAR SESIÓN)
-    # ============================
-    with pestañas[2]:
-        with st.container(border=True):
-            st.subheader("⚙️ Opciones")
-            if "user" in st.session_state:
-                st.divider()
-                if st.button("🚪 Cerrar sesión", key="logout_button"):
-                    st.session_state.pop("user", None)
-                    st.success("Sesión cerrada correctamente.")
-                    st.rerun()
+# ⚙️ OPCIONES (CERRAR SESIÓN)
+# ============================
+with pestañas[2]:
+    with st.container(border=True):
+        st.subheader("⚙️ Opciones")
+
+        if "user" in st.session_state and st.session_state["user"]:
+            st.divider()
+            if st.button("🔒 Cerrar sesión", key="logout_button"):
+                # Limpiar archivo de sesión
+                clear_session_token()
+                # Limpiar session_state
+                st.session_state.pop("user", None)
+                st.success("✅ Sesión cerrada correctamente.")
+                st.rerun()
+
 
 
 
