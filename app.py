@@ -7,7 +7,7 @@ import pandas as pd
 import uuid  # ✅ Para IDs únicos
 
 # ============================
-# 🔐 CONFIGURACIÓN FIREBASE
+# CONFIGURACIÓN FIREBASE
 # ============================
 
 if not firebase_admin._apps:
@@ -18,7 +18,7 @@ db = firestore.client()
 WEB_API_KEY = st.secrets["firebase"]["api_key"]
 
 # ============================
-# 📊 FUNCIONES AUXILIARES
+# FUNCIONES AUXILIARES
 # ============================
 
 def format_num(num):
@@ -32,7 +32,7 @@ def format_num(num):
         return str(num)
 
 # ============================
-# 🔐 FUNCIONES DE AUTENTICACIÓN
+# FUNCIONES DE AUTENTICACIÓN
 # ============================
 
 def signup(email, password):
@@ -48,7 +48,7 @@ def login(email, password):
     return res.json()
 
 # ============================
-# 📦 FUNCIONES DE PERFILES
+# FUNCIONES DE PERFILES
 # ============================
 
 def list_profiles(uid):
@@ -82,13 +82,13 @@ def save_data(uid, perfil, brainrots, cuentas):
     })
 
 # ============================
-# 🎨 INTERFAZ STREAMLIT
+# INTERFAZ STREAMLIT
 # ============================
 
 st.title("📒 Inventario de Brainrots")
 
 # ============================
-# 🔑 LOGIN / REGISTRO
+# LOGIN / REGISTRO
 # ============================
 if "user" not in st.session_state:
     tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
@@ -149,7 +149,7 @@ else:
                 st.rerun()
 
         # ============================
-        # 📦 INVENTARIO DE BRAINROTS
+        # INVENTARIO DE BRAINROTS
         # ============================
         if perfil_actual and perfil_actual != "(ninguno)":
             brainrots, cuentas = load_data(uid, perfil_actual)
@@ -248,7 +248,7 @@ else:
                     st.rerun()
 
             # ----------------------------
-            # Mostrar tabla (sin índice ni id)
+            # Mostrar tabla
             # ----------------------------
             if brainrots:
                 with st.container(border=True):
@@ -310,14 +310,15 @@ else:
 
 
 # ============================
-# 🔓 CERRAR SESIÓN
+# CERRAR SESIÓN
 # ============================
-with st.container(border=True):
-    st.markdown("### 🔓 Cerrar sesión")
-    if st.button("Cerrar sesión"):
-        st.session_state.pop("user", None)  # elimina el usuario
-        st.success("Sesión cerrada correctamente.")
-        st.rerun()
+if "user" in st.session_state and st.session_state["user"]:
+    with st.container(border=True):
+        st.markdown("### 🔓 Cerrar sesión")
+        if st.button("Cerrar sesión"):
+            st.session_state.pop("user", None)  # eliminar usuario
+            st.success("Sesión cerrada correctamente.")
+            st.rerun()
 
 
 
