@@ -4,6 +4,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import pandas as pd
 import uuid  # ✅ Para IDs únicos
+import time
 
 # ============================
 # CONFIGURACIÓN FIREBASE
@@ -125,10 +126,45 @@ if "user" not in st.session_state and "uid" in cookies and "email" in cookies:
     }
 
 # ============================
-# LOGIN / SIGNUP
+# 🔑 LOGIN / SIGNUP CON TOKEN
 # ============================
 
-if "user" not in st.session_state:
+def save_session_token(uid, email):
+    """Guarda un token de sesión en Firestore con expiración de 7 días."""
+    token_id = str(uuid.uuid4())
+    expires_at = int(time.time()) + (7 * 24 * 60 * 60)  # 7 días en segundos
+    db.collection("sessions").document(token_id).set({
+        "uid": uid,
+        "email": email,
+        "expires_at": expires_at
+    })
+    st.session_state["session_token"] = token_id
+    st.session_state["user"] = {"uid": uid, "email": email}
+
+def load_session_token():
+    """Carga la sesión si existe un token guardado en session_state."""
+    if "session_token" in st.session_state:
+        token_id = st.session_state["session_token"]
+        doc = db.collection("sessions").document(token_id).get()
+        if doc.exists:
+            data = doc.to_dict()
+            if int(time.time()) < data["expires_at"]:  # token válido
+                st.session_state["user"] = {"uid": data["uid"], "email": data["email"]}
+                return True
+    return False
+
+def clear_session():
+    """Cierra sesión borrando el token."""
+    if "session_token" in st.session_state:
+        db.collection("sessions").document(st.session_state["session_token"]).delete()
+    st.session_state.clear()
+    st.rerun()
+
+# ============================
+# 🖥️ INTERFAZ LOGIN / SIGNUP
+# ============================
+
+if not load_session_token():
     tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
 
     with tabs[0]:
@@ -139,14 +175,7 @@ if "user" not in st.session_state:
             if "error" in user:
                 st.error(user["error"]["message"])
             else:
-                st.session_state["user"] = {
-                    "uid": user["localId"],
-                    "email": user["email"]
-                }
-                # Guardar en cookies
-                cookies["uid"] = user["localId"]
-                cookies["email"] = user["email"]
-                cookies.save()
+                save_session_token(user["localId"], user["email"])
                 st.success(f"Sesión iniciada: {user['email']}")
                 st.rerun()
 
@@ -162,6 +191,8 @@ if "user" not in st.session_state:
 
 else:
     st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
+    if st.button("🚪 Cerrar sesión"):
+        clear_session()
 
     # ============================
     # PESTAÑAS PRINCIPALES
@@ -511,6 +542,7 @@ else:
                 cookies.save()
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
