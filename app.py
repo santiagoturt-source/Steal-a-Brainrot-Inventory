@@ -1,315 +1,195 @@
 import streamlit as st
-import requests
+import pandas as pd
 import json
 import firebase_admin
 from firebase_admin import credentials, firestore
-import pandas as pd
+import pyrebase
 
-# ============================
-# 🔐 CONFIGURACIÓN FIREBASE
-# ============================
+# ---- CONFIGURACIÓN DE PÁGINA ----
+st.set_page_config(page_title="Inventario con Usuarios + Perfiles", layout="wide")
 
+# ---- ESTILOS ----
+st.markdown("""
+    <style>
+        .card {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+        }
+        .card h3 {
+            color: #a970ff;
+            margin-bottom: 15px;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# ---- FIREBASE ----
 if not firebase_admin._apps:
-    cred = credentials.Certificate(dict(st.secrets["FIREBASE_KEY"]))
+    cred = credentials.Certificate(json.loads(st.secrets["FIREBASE_KEY"]))
     firebase_admin.initialize_app(cred)
-
 db = firestore.client()
-WEB_API_KEY = st.secrets["firebase"]["api_key"]
 
-# ============================
-# 📊 FUNCIONES AUXILIARES
-# ============================
+firebase_config = {
+    "apiKey": st.secrets["firebase"]["api_key"],
+    "authDomain": st.secrets["firebase"]["auth_domain"],
+    "projectId": st.secrets["firebase"]["project_id"],
+    "storageBucket": st.secrets["firebase"]["storage_bucket"],
+    "messagingSenderId": st.secrets["firebase"]["messaging_sender_id"],
+    "appId": st.secrets["firebase"]["app_id"],
+}
+firebase = pyrebase.initialize_app(firebase_config)
+auth = firebase.auth()
 
-def format_num(num):
-    if num >= 1_000_000_000:
-        return f"{num/1_000_000_000:.1f}B"
-    elif num >= 1_000_000:
-        return f"{num/1_000_000:.1f}M"
-    elif num >= 1_000:
-        return f"{num/1_000:.1f}K"
-    else:
-        return str(num)
+# ---- LOGIN ----
+with st.container():
+    st.markdown("<div class='card'><h3>🔑 Iniciar sesión / Registro</h3>", unsafe_allow_html=True)
 
-# ============================
-# 🔐 FUNCIONES DE AUTENTICACIÓN
-# ============================
+    tab_login, tab_register = st.tabs(["Iniciar sesión", "Registrarse"])
+    with tab_login:
+        email = st.text_input("Correo", key="login_email")
+        password = st.text_input("Contraseña", type="password", key="login_pass")
+        if st.button("Entrar"):
+            try:
+                user = auth.sign_in_with_email_and_password(email, password)
+                st.session_state["user"] = user
+                st.success("Sesión iniciada correctamente")
+            except Exception as e:
+                st.error("Error al iniciar sesión")
 
-def signup(email, password):
-    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={WEB_API_KEY}"
-    payload = {"email": email, "password": password, "returnSecureToken": True}
-    res = requests.post(url, data=payload)
-    return res.json()
+    with tab_register:
+        email_new = st.text_input("Correo nuevo", key="reg_email")
+        password_new = st.text_input("Contraseña nueva", type="password", key="reg_pass")
+        if st.button("Crear cuenta"):
+            try:
+                user = auth.create_user_with_email_and_password(email_new, password_new)
+                st.success("Cuenta creada correctamente")
+            except Exception as e:
+                st.error("Error al crear cuenta")
 
-def login(email, password):
-    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={WEB_API_KEY}"
-    payload = {"email": email, "password": password, "returnSecureToken": True}
-    res = requests.post(url, data=payload)
-    return res.json()
+    st.markdown("</div>", unsafe_allow_html=True)
 
-# ============================
-# 📦 FUNCIONES DE PERFILES
-# ============================
+if "user" not in st.session_state:
+    st.warning("Debes iniciar sesión para ver tus perfiles.")
+    st.stop()
 
+user = st.session_state["user"]
+uid = user["localId"]
+
+# ---- FUNCIONES ----
 def list_profiles(uid):
-    try:
-        col = db.collection("perfiles").document(uid).collection("data").stream()
-        return [doc.id for doc in col]
-    except Exception as e:
-        st.error(f"Error listando perfiles: {e}")
-        return []
+    col = db.collection("perfiles").document(uid).collection("data").stream()
+    return [doc.id for doc in col]
 
-def create_profile(uid, name):
-    db.collection("perfiles").document(uid).collection("data").document(name).set({
-        "brainrots": [],
-        "cuentas": []
-    })
+def get_profile_data(uid, perfil):
+    return db.collection("perfiles").document(uid).collection("data").document(perfil).get().to_dict()
 
-def delete_profile(uid, name):
-    db.collection("perfiles").document(uid).collection("data").document(name).delete()
+def save_profile_data(uid, perfil, data):
+    db.collection("perfiles").document(uid).collection("data").document(perfil).set(data)
 
-def load_data(uid, perfil):
-    doc = db.collection("perfiles").document(uid).collection("data").document(perfil).get()
-    if doc.exists:
-        data = doc.to_dict()
-        return data.get("brainrots", []), data.get("cuentas", [])
-    return [], []
-
-def save_data(uid, perfil, brainrots, cuentas):
-    db.collection("perfiles").document(uid).collection("data").document(perfil).set({
-        "brainrots": brainrots,
-        "cuentas": cuentas
-    })
-
-# ============================
-# 🎨 INTERFAZ STREAMLIT
-# ============================
-
-st.title("📒 Inventario de Steal a Brainrot")
-
-# Tabs de login/registro
-tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
-
-# ----------------------------
-# TAB LOGIN
-# ----------------------------
-with tabs[0]:
-    email = st.text_input("Correo", key="login_email")
-    password = st.text_input("Contraseña", type="password", key="login_pass")
-
-    if st.button("Entrar"):
-        user = login(email, password)
-        if "error" in user:
-            st.error(user["error"]["message"])
-        else:
-            st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
-            st.success(f"Sesión iniciada: {user['email']}")
-            st.rerun()
-
-# ----------------------------
-# TAB REGISTRO
-# ----------------------------
-with tabs[1]:
-    new_email = st.text_input("Correo nuevo", key="signup_email")
-    new_pass = st.text_input("Contraseña nueva", type="password", key="signup_pass")
-
-    if st.button("Crear cuenta"):
-        user = signup(new_email, new_pass)
-        if "error" in user:
-            st.error(user["error"]["message"])
-        else:
-            st.success(f"Cuenta creada: {new_email}. Ahora puedes iniciar sesión.")
-
-# ----------------------------
-# GESTIÓN DE PERFILES
-# ----------------------------
-st.subheader("👤 Gestión de Perfiles")
-
-perfil_actual = None
-
-if "user" in st.session_state and st.session_state["user"]:
-    uid = st.session_state["user"]["uid"]
+# ---- PERFILES ----
+with st.container():
+    st.markdown("<div class='card'><h3>👤 Gestión de Perfiles</h3>", unsafe_allow_html=True)
     perfiles = list_profiles(uid)
-
-    if perfiles:
-        perfil_actual = st.selectbox("Selecciona un perfil", ["(ninguno)"] + perfiles)
-    else:
-        st.info("No tienes perfiles creados todavía.")
-
+    perfil_actual = st.selectbox("Selecciona un perfil", ["(ninguno)"] + perfiles)
     nuevo_perfil = st.text_input("Nombre de nuevo perfil")
     if st.button("➕ Crear perfil"):
         if nuevo_perfil:
-            create_profile(uid, nuevo_perfil)
+            save_profile_data(uid, nuevo_perfil, {"brainrots": [], "cuentas": []})
             st.success(f"Perfil '{nuevo_perfil}' creado.")
             st.rerun()
+    if perfil_actual != "(ninguno)" and st.button(f"🗑️ Borrar perfil '{perfil_actual}'"):
+        db.collection("perfiles").document(uid).collection("data").document(perfil_actual).delete()
+        st.success(f"Perfil '{perfil_actual}' borrado.")
+        st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    if perfil_actual and perfil_actual != "(ninguno)":
-        if st.button(f"🗑️ Borrar perfil '{perfil_actual}'"):
-            delete_profile(uid, perfil_actual)
-            st.success(f"Perfil '{perfil_actual}' borrado.")
+if perfil_actual == "(ninguno)":
+    st.stop()
+
+perfil_data = get_profile_data(uid, perfil_actual)
+if perfil_data is None:
+    perfil_data = {"brainrots": [], "cuentas": []}
+
+# ---- CUENTAS ----
+with st.container():
+    st.markdown("<div class='card'><h3>🏷️ Gestión de Cuentas</h3>", unsafe_allow_html=True)
+    nueva_cuenta = st.text_input("Nombre de nueva cuenta")
+    if st.button("➕ Agregar cuenta"):
+        if nueva_cuenta and nueva_cuenta not in perfil_data["cuentas"]:
+            perfil_data["cuentas"].append(nueva_cuenta)
+            save_profile_data(uid, perfil_actual, perfil_data)
+            st.success(f"Cuenta '{nueva_cuenta}' añadida.")
             st.rerun()
 
-    # ============================
-    # 📦 INVENTARIO DE BRAINROTS
-    # ============================
-    if perfil_actual and perfil_actual != "(ninguno)":
-        brainrots, cuentas = load_data(uid, perfil_actual)
+    cuenta_borrar = st.selectbox("Selecciona una cuenta para borrar", ["(ninguna)"] + perfil_data["cuentas"])
+    if st.button("🗑️ Borrar cuenta"):
+        if cuenta_borrar != "(ninguna)":
+            perfil_data["cuentas"].remove(cuenta_borrar)
+            save_profile_data(uid, perfil_actual, perfil_data)
+            st.warning(f"Cuenta '{cuenta_borrar}' eliminada.")
+            st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
-        st.subheader(f"📦 Inventario — Perfil: {perfil_actual}")
+# ---- AGREGAR BRAINROT ----
+with st.container():
+    st.markdown("<div class='card'><h3>➕ Agregar Brainrot</h3>", unsafe_allow_html=True)
+    nombre = st.text_input("Nombre del Brainrot")
+    color = st.selectbox("Color", ["-", "Gold", "Rainbow"])
+    mutaciones = st.multiselect("Mutaciones", ["Taco", "Matteo Hat", "Glow", "Shadow"])
+    cuenta = st.selectbox("Cuenta", ["(ninguna)"] + perfil_data["cuentas"])
+    valor_base = st.number_input("Valor base", min_value=0, step=1000)
 
-        # ----------------------------
-        # Gestión de cuentas
-        # ----------------------------
-        st.markdown("### 🏷️ Gestión de cuentas")
-        nueva_cuenta = st.text_input("Nombre de nueva cuenta")
-        if st.button("➕ Agregar cuenta"):
-            if nueva_cuenta and nueva_cuenta not in cuentas:
-                cuentas.append(nueva_cuenta)
-                save_data(uid, perfil_actual, brainrots, cuentas)
-                st.success(f"Cuenta '{nueva_cuenta}' añadida.")
-                st.rerun()
+    if st.button("Agregar Brainrot"):
+        brainrot = {"nombre": nombre, "color": color, "mutaciones": mutaciones, "cuenta": cuenta, "total": valor_base}
+        perfil_data["brainrots"].append(brainrot)
+        save_profile_data(uid, perfil_actual, perfil_data)
+        st.success(f"Brainrot '{nombre}' agregado.")
+        st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
-        if cuentas:
-            cuenta_borrar = st.selectbox("Selecciona una cuenta para borrar", ["(ninguna)"] + cuentas)
-            if st.button("🗑️ Borrar cuenta") and cuenta_borrar != "(ninguna)":
-                cuentas = [c for c in cuentas if c != cuenta_borrar]
-                for b in brainrots:
-                    if b["cuenta"] == cuenta_borrar:
-                        b["cuenta"] = "(ninguna)"
-                save_data(uid, perfil_actual, brainrots, cuentas)
-                st.success(f"Cuenta '{cuenta_borrar}' borrada.")
-                st.rerun()
+# ---- TABLA ----
+with st.container():
+    st.markdown("<div class='card'><h3>📊 Inventario de Brainrots</h3>", unsafe_allow_html=True)
+    brainrots = perfil_data.get("brainrots", [])
+    if brainrots:
+        df = pd.DataFrame(brainrots)
+        df["mutaciones"] = df["mutaciones"].apply(lambda x: ", ".join(x) if x else "-")
+        st.dataframe(df, use_container_width=True)
+    else:
+        st.info("No hay Brainrots aún.")
+    st.markdown("</div>", unsafe_allow_html=True)
 
-        # ----------------------------
-        # Agregar Brainrot
-        # ----------------------------
-        st.markdown("### ➕ Agregar Brainrot")
+# ---- BORRAR / MOVER ----
+with st.container():
+    st.markdown("<div class='card'><h3>🗑️➡️ Borrar / Mover Brainrots</h3>", unsafe_allow_html=True)
 
-        # Lista fija de Brainrots con valores base
-        BRAINROTS = {
-            "Graipuss Medussi": 150000,
-            "Job Job Job Sahur": 8293023,
-            "Trenozostruzo Turbo 3000": 225000,
-            "Blackhole Goat": 420000,
-            "La Vaca Saturno Saturnina": 300000
-        }
+    opciones = ["(ninguno)"] + [
+        f"{b['nombre']} | Total: {b['total']} | Cuenta: {b['cuenta']} | Color: {b['color']} | Mutaciones: {', '.join(b['mutaciones']) if b['mutaciones'] else '-'}"
+        for b in brainrots
+    ]
 
-        # Colores con multiplicadores
-        COLORES = {
-            "-": 0,
-            "Gold": 1.25,
-            "Rainbow": 10,
-            "Galaxy": 7,
-            "Candy": 4,
-            "Diamond": 17
-        }
-
-        # Mutaciones con multiplicadores
-        MUTACIONES = {
-            "Taco": 3,
-            "Matteo Hat": 4.5,
-            "UFO": 3,
-            "Concert / Disco": 5,
-            "Bubblegum": 4,
-            "Fire (Solar Flare)": 6,
-            "Glitch": 5,
-            "Crab Rave": 5,
-            "Nyan Cat": 6,
-            "Lightning": 6
-        }
-
-        # Selección del Brainrot
-        personaje = st.selectbox(
-            "Selecciona un Brainrot",
-            ["(ninguno)"] + [f"{k} — {format_num(v)}" for k, v in BRAINROTS.items()]
-        )
-
-        color = st.selectbox("Color", list(COLORES.keys()))
-        mutaciones = st.multiselect("Mutaciones", list(MUTACIONES.keys()), max_selections=5)
-        cuenta_sel = st.selectbox("Cuenta", ["(ninguna)"] + cuentas)
-
-        if st.button("Agregar") and personaje != "(ninguno)":
-            # Extraer nombre limpio y valor base
-            nombre = personaje.split(" — ")[0]
-            base = BRAINROTS[nombre]
-
-            # Calcular total
-            total = base
-            if color != "-":
-                total += base * COLORES[color]
-            for m in mutaciones:
-                total += base * MUTACIONES[m]
-
-            brainrots.append({
-                "Braintot": nombre,
-                "Color": color,
-                "Mutaciones": mutaciones,
-                "Cuenta": cuenta_sel,
-                "Total": total
-            })
-            save_data(uid, perfil_actual, brainrots, cuentas)
-            st.success(f"Brainrot '{nombre}' agregado con total {format_num(total)}.")
+    borrar = st.selectbox("Selecciona un Brainrot para borrar", opciones, key="borrar_br")
+    if st.button("🗑️ Borrar Brainrot"):
+        if borrar != "(ninguno)":
+            idx = opciones.index(borrar) - 1
+            eliminado = perfil_data["brainrots"].pop(idx)
+            save_profile_data(uid, perfil_actual, perfil_data)
+            st.warning(f"Brainrot '{eliminado['nombre']}' eliminado.")
             st.rerun()
 
+    mover = st.selectbox("Selecciona un Brainrot para mover", opciones, key="mover_br")
+    mover_a = st.selectbox("Mover a cuenta", ["(ninguna)"] + perfil_data["cuentas"])
+    if st.button("➡️ Mover Brainrot"):
+        if mover != "(ninguno)" and mover_a != "(ninguna)":
+            idx = opciones.index(mover) - 1
+            perfil_data["brainrots"][idx]["cuenta"] = mover_a
+            save_profile_data(uid, perfil_actual, perfil_data)
+            st.success(f"Brainrot '{perfil_data['brainrots'][idx]['nombre']}' movido a cuenta {mover_a}.")
+            st.rerun()
 
-        # ----------------------------
-        # Mostrar tabla
-        # ----------------------------
-        if brainrots:
-            df = pd.DataFrame(brainrots)
-
-            orden = st.selectbox("Ordenar por", ["Total ↓", "Total ↑", "Cuenta", "Personaje"])
-            if orden == "Total ↓":
-                df = df.sort_values(by="total", ascending=False)
-            elif orden == "Total ↑":
-                df = df.sort_values(by="total", ascending=True)
-            elif orden == "Cuenta":
-                df = df.sort_values(by="cuenta")
-            elif orden == "Personaje":
-                df = df.sort_values(by="personaje")
-
-            df["total"] = df["total"].apply(format_num)
-            st.dataframe(df.reset_index(drop=True), use_container_width=True)
-
-            # ----------------------------
-            # Función para mostrar Brainrots en borrar/mover
-            # ----------------------------
-            def brainrot_label(b):
-                parts = [b["personaje"]]
-                parts.append(f"Total: {format_num(b['total'])}")
-                if b.get("cuenta") and b["cuenta"] != "(ninguna)":
-                    parts.append(f"Cuenta: {b['cuenta']}")
-                if b.get("color") and b["color"] != "-":
-                    parts.append(f"Color: {b['color']}")
-                if b.get("mutaciones"):
-                    parts.append(f"Mutaciones: {', '.join(b['mutaciones'])}")
-                return " | ".join(parts)
-
-
-            opciones_brainrots = ["(ninguno)"] + [brainrot_label(b) for b in brainrots]
-
-            # Borrar
-            to_delete = st.selectbox("Selecciona un Brainrot para borrar", opciones_brainrots)
-            if st.button("🗑️ Borrar Brainrot") and to_delete != "(ninguno)":
-                personaje_sel = to_delete.split(" | ")[0]
-                brainrots = [b for b in brainrots if b["personaje"] != personaje_sel]
-                save_data(uid, perfil_actual, brainrots, cuentas)
-                st.success(f"Brainrot '{to_delete}' borrado.")
-                st.rerun()
-
-            # Mover
-            mover = st.selectbox("Selecciona un Brainrot para mover", opciones_brainrots)
-            nueva_cuenta_sel = st.selectbox("Mover a cuenta", ["(ninguna)"] + cuentas)
-            if st.button("🔄 Mover Brainrot") and mover != "(ninguno)" and nueva_cuenta_sel != "(ninguna)":
-                personaje_sel = mover.split(" | ")[0]
-                for b in brainrots:
-                    if b["personaje"] == personaje_sel:
-                        b["cuenta"] = nueva_cuenta_sel
-                save_data(uid, perfil_actual, brainrots, cuentas)
-                st.success(f"Brainrot '{personaje_sel}' movido a cuenta '{nueva_cuenta_sel}'.")
-                st.rerun()
-
-else:
-    st.warning("Debes iniciar sesión para ver tus perfiles.")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 
