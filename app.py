@@ -5,7 +5,7 @@ from firebase_admin import credentials, firestore
 import pandas as pd
 import uuid  # ✅ Para IDs únicos
 import time
-import os
+import os, json
 
 TOKEN_FILE = "session_token.json"
 
@@ -16,17 +16,20 @@ def save_session_token(uid, email):
 
 def load_session_token():
     if os.path.exists(TOKEN_FILE):
-        with open(TOKEN_FILE, "r") as f:
-            data = json.load(f)
-            st.session_state["user"] = data
-            return True
+        try:
+            with open(TOKEN_FILE, "r") as f:
+                data = json.load(f)
+                if "uid" in data and "email" in data:
+                    st.session_state["user"] = data
+                    return True
+        except Exception:
+            return False
     return False
 
 def clear_session_token():
     if os.path.exists(TOKEN_FILE):
         os.remove(TOKEN_FILE)
     st.session_state["user"] = None
-
 # ============================
 # CONFIGURACIÓN FIREBASE
 # ============================
@@ -505,6 +508,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
