@@ -109,14 +109,14 @@ from streamlit_cookies_manager import EncryptedCookieManager
 # LOGIN / SIGNUP con persistencia en URL
 # ============================
 
-# Revisar si ya hay parámetros en la URL
-query_params = st.experimental_get_query_params()
+# Leer parámetros desde la URL
+query_params = st.query_params
 
 if "user" not in st.session_state and "uid" in query_params and "email" in query_params:
-    # Restaurar sesión desde URL
+    # Restaurar sesión desde la URL
     st.session_state["user"] = {
-        "uid": query_params["uid"][0],
-        "email": query_params["email"][0]
+        "uid": query_params["uid"],
+        "email": query_params["email"]
     }
 
 if "user" not in st.session_state:
@@ -130,9 +130,10 @@ if "user" not in st.session_state:
             if "error" in user:
                 st.error(user["error"]["message"])
             else:
-                # Guardar sesión
+                # Guardar sesión en memoria
                 st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
-                st.experimental_set_query_params(uid=user["localId"], email=user["email"])
+                # Guardar sesión en la URL
+                st.query_params = {"uid": user["localId"], "email": user["email"]}
                 st.success(f"Sesión iniciada: {user['email']}")
                 st.rerun()
 
@@ -499,6 +500,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
