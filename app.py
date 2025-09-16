@@ -106,18 +106,27 @@ st.title("📒 Inventario de Brainrots")
 from streamlit_cookies_manager import EncryptedCookieManager
 
 # ============================
-# LOGIN / SIGNUP con persistencia en URL
+# 🔐 CONFIGURACIÓN DE COOKIES
 # ============================
 
-# Leer parámetros desde la URL
-query_params = st.query_params
+cookies = EncryptedCookieManager(
+    prefix="brainrot_app",  
+    password="clave-super-secreta-123456789"  # cámbiala por una clave propia
+)
 
-if "user" not in st.session_state and "uid" in query_params and "email" in query_params:
-    # Restaurar sesión desde la URL
+if not cookies.ready():
+    st.stop()
+
+# Restaurar sesión desde cookies si existe
+if "user" not in st.session_state and "uid" in cookies and "email" in cookies:
     st.session_state["user"] = {
-        "uid": query_params["uid"],
-        "email": query_params["email"]
+        "uid": cookies["uid"],
+        "email": cookies["email"]
     }
+
+# ============================
+# LOGIN / SIGNUP
+# ============================
 
 if "user" not in st.session_state:
     tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
@@ -130,21 +139,20 @@ if "user" not in st.session_state:
             if "error" in user:
                 st.error(user["error"]["message"])
             else:
-                # Guardar sesión en memoria
-                st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
-                # Guardar sesión en la URL
-                st.query_params = {"uid": user["localId"], "email": user["email"]}
+                st.session_state["user"] = {
+                    "uid": user["localId"],
+                    "email": user["email"]
+                }
+                # Guardar en cookies
+                cookies["uid"] = user["localId"]
+                cookies["email"] = user["email"]
+                cookies.save()
                 st.success(f"Sesión iniciada: {user['email']}")
                 st.rerun()
 
     with tabs[1]:
         new_email = st.text_input("Correo nuevo", key="signup_email_input")
-        new_pass = st.text_input(
-            "Contraseña nueva",
-            type="password",
-            key="signup_pass_input",
-            placeholder="Mínimo 6 caracteres"
-        )
+        new_pass = st.text_input("Contraseña nueva", type="password", key="signup_pass_input", placeholder="Mínimo 6 caracteres")
         if st.button("Crear cuenta", key="signup_button"):
             user = signup(new_email, new_pass)
             if "error" in user:
@@ -154,6 +162,15 @@ if "user" not in st.session_state:
 
 else:
     st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
+
+    # Botón de cerrar sesión (borra cookies también)
+    if st.button("🚪 Cerrar sesión"):
+        del st.session_state["user"]
+        cookies.pop("uid")
+        cookies.pop("email")
+        cookies.save()
+        st.success("Sesión cerrada.")
+        st.rerun()
 
     # ============================
     # PESTAÑAS PRINCIPALES
@@ -500,6 +517,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
