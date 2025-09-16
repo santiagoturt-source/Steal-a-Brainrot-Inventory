@@ -416,7 +416,7 @@ else:
                     )
 
                     color = st.selectbox("Color", list(COLORES.keys()))
-                    mutaciones = st.multiselect("Mutaciones", list(MUTACIONES.keys()), max_selections=5)
+                    mutaciones = st.multiselect("Mutaciones", list(MUTACIONES.keys()))
                     cuenta_sel = st.selectbox("Cuenta", ["(ninguna)"] + cuentas)
 
                     if st.button("Agregar") and personaje != "(ninguno)":
@@ -511,6 +511,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
