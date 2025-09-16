@@ -368,7 +368,6 @@ else:
     "🍬 Bubblegum": 4,
     "💣 Bombardiro": 4,
     "🔟 10B": 4,
-    "🌈 Candy Aurora": 4,
     "☠️ Extinct": 4,
     "🎩 Matteo Hat": 4.5,
     "🕷️ Spider (Spyderini)": 4.5,
@@ -382,7 +381,6 @@ else:
     "🎆 4th of July Fireworks": 6,
     "⚡ Lightning": 6,
     "🍓 Strawberry": 8,
-    "⚙️🌈 Rainbow Machine": 10
 }
 
                     personaje = st.selectbox(
@@ -481,6 +479,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
