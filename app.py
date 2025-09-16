@@ -106,15 +106,17 @@ st.title("📒 Inventario de Brainrots")
 from streamlit_cookies_manager import EncryptedCookieManager
 
 # ============================
-# LOGIN / SIGNUP con persistencia manual
+# LOGIN / SIGNUP con persistencia en URL
 # ============================
 
-# Recuperar sesión desde query params si no existe en session_state
-query_params = st.query_params()
+# Revisar si ya hay parámetros en la URL
+query_params = st.experimental_get_query_params()
+
 if "user" not in st.session_state and "uid" in query_params and "email" in query_params:
+    # Restaurar sesión desde URL
     st.session_state["user"] = {
         "uid": query_params["uid"][0],
-        "email": query_params["email"][0],
+        "email": query_params["email"][0]
     }
 
 if "user" not in st.session_state:
@@ -128,21 +130,18 @@ if "user" not in st.session_state:
             if "error" in user:
                 st.error(user["error"]["message"])
             else:
+                # Guardar sesión
                 st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
-                # Guardamos también en la URL
-                st.experimental_set_query_params(
-                    uid=user["localId"],
-                    email=user["email"]
-                )
+                st.experimental_set_query_params(uid=user["localId"], email=user["email"])
                 st.success(f"Sesión iniciada: {user['email']}")
                 st.rerun()
 
     with tabs[1]:
         new_email = st.text_input("Correo nuevo", key="signup_email_input")
         new_pass = st.text_input(
-            "Contraseña nueva", 
-            type="password", 
-            key="signup_pass_input", 
+            "Contraseña nueva",
+            type="password",
+            key="signup_pass_input",
             placeholder="Mínimo 6 caracteres"
         )
         if st.button("Crear cuenta", key="signup_button"):
@@ -154,11 +153,6 @@ if "user" not in st.session_state:
 
 else:
     st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
-    if st.button("🚪 Cerrar sesión"):
-        # Limpiamos la sesión y query params
-        st.session_state.pop("user", None)
-        st.experimental_set_query_params()  # limpiamos la URL
-        st.rerun()
 
     # ============================
     # PESTAÑAS PRINCIPALES
@@ -505,6 +499,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
