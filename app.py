@@ -495,10 +495,7 @@ else:
                                 save_data(uid, perfil_actual, brainrots, cuentas)
                                 st.success(f"Brainrot movido a cuenta '{nueva_cuenta_sel}'.")
                                 st.rerun()
-    # ============================
-# ⚙️ OPCIONES (CERRAR SESIÓN)
-# ============================
-with pestañas[2]:
+    with pestañas[2]:
     with st.container(border=True):
         st.subheader("⚙️ Opciones")
 
@@ -511,6 +508,7 @@ with pestañas[2]:
                 st.session_state.pop("user", None)
                 st.success("✅ Sesión cerrada correctamente.")
                 st.rerun()
+
 
 
 
