@@ -352,7 +352,7 @@ else:
     "💎 Diamond": 1.5,
     "🩸 Bloodrot": 2,
     "🍬 Candy": 4,
-    "♨️ Lava": 6,
+    "🌋 Lava": 6,
     "🌌 Galaxy": 7,
     "🌈 Rainbow": 10
 }
@@ -479,6 +479,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
