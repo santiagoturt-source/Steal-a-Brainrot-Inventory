@@ -134,16 +134,6 @@ else:
     st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
 
     # ============================
-    # 🔓 BOTÓN CERRAR SESIÓN
-    # ============================
-    with st.container(border=True):
-        st.markdown("### 🔓 Cerrar sesión")
-        if st.button("Cerrar sesión"):
-            st.session_state.pop("user", None)
-            st.success("Sesión cerrada correctamente.")
-            st.rerun()
-
-    # ============================
     # 👤 GESTIÓN DE PERFILES
     # ============================
     with st.container(border=True):
@@ -327,6 +317,17 @@ else:
                         save_data(uid, perfil_actual, brainrots, cuentas)
                         st.success(f"Brainrot movido a cuenta '{nueva_cuenta_sel}'.")
                         st.rerun()
+                        
+    # ============================
+    # 🔓 BOTÓN CERRAR SESIÓN
+    # ============================
+    with st.container(border=True):
+        st.markdown("### 🔓 Cerrar sesión")
+        if st.button("Cerrar sesión"):
+            st.session_state.pop("user", None)
+            st.success("Sesión cerrada correctamente.")
+            st.rerun()
+
 
 
 
