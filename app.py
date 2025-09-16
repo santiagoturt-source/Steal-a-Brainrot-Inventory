@@ -17,26 +17,46 @@ db = firestore.client()
 WEB_API_KEY = st.secrets["firebase"]["api_key"]
 
 # ============================
+# 📊 FUNCIONES AUXILIARES
+# ============================
+
+def format_num(num):
+    if num >= 1_000_000_000:
+        return f"{num/1_000_000_000:.1f}B"
+    elif num >= 1_000_000:
+        return f"{num/1_000_000:.1f}M"
+    elif num >= 1_000:
+        return f"{num/1_000:.1f}K"
+    else:
+        return str(num)
+
+# ============================
 # 🔐 FUNCIONES DE AUTENTICACIÓN
 # ============================
 
 def signup(email, password):
     url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={WEB_API_KEY}"
     payload = {"email": email, "password": password, "returnSecureToken": True}
-    return requests.post(url, data=payload).json()
+    res = requests.post(url, data=payload)
+    return res.json()
 
 def login(email, password):
     url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={WEB_API_KEY}"
     payload = {"email": email, "password": password, "returnSecureToken": True}
-    return requests.post(url, data=payload).json()
+    res = requests.post(url, data=payload)
+    return res.json()
 
 # ============================
 # 📦 FUNCIONES DE PERFILES
 # ============================
 
 def list_profiles(uid):
-    col = db.collection("perfiles").document(uid).collection("data").stream()
-    return [doc.id for doc in col]
+    try:
+        col = db.collection("perfiles").document(uid).collection("data").stream()
+        return [doc.id for doc in col]
+    except Exception as e:
+        st.error(f"Error listando perfiles: {e}")
+        return []
 
 def create_profile(uid, name):
     db.collection("perfiles").document(uid).collection("data").document(name).set({
@@ -55,41 +75,16 @@ def load_data(uid, perfil):
     return [], []
 
 def save_data(uid, perfil, brainrots, cuentas):
-    db.collection("perfiles").document(uid).collection("data").document(perfil).update({
+    db.collection("perfiles").document(uid).collection("data").document(perfil).set({
         "brainrots": brainrots,
         "cuentas": cuentas
     })
 
 # ============================
-# 📊 DATOS DE REFERENCIA
-# ============================
-
-BRAINROTS = {
-    "Job Job Job Sahur": 700000,
-    "Graipuss Medussi": 1000000,
-    "Trenozostruzo Turbo 3000": 150000
-}
-
-COLORES = {
-    "-": 1,
-    "Gold": 1.25,
-    "Galaxy": 7,
-    "Rainbow": 10
-}
-
-MUTACIONES = {
-    "Taco": 3,
-    "Bubblegum": 4,
-    "Matteo Hat": 4.5,
-    "4th of July Fireworks": 6,
-    "Glitch": 5
-}
-
-# ============================
 # 🎨 INTERFAZ STREAMLIT
 # ============================
 
-st.title("🧠 Inventario de Brainrots — Perfiles + Cuentas")
+st.title("📒 Inventario con Usuarios + Perfiles + Brainrots")
 
 # Tabs de login/registro
 tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
@@ -108,6 +103,7 @@ with tabs[0]:
         else:
             st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
             st.success(f"Sesión iniciada: {user['email']}")
+            st.rerun()
 
 # ----------------------------
 # TAB REGISTRO
@@ -124,7 +120,7 @@ with tabs[1]:
             st.success(f"Cuenta creada: {new_email}. Ahora puedes iniciar sesión.")
 
 # ----------------------------
-# GESTIÓN DE PERFILES, CUENTAS Y BRAINROTS
+# GESTIÓN DE PERFILES
 # ----------------------------
 st.subheader("👤 Gestión de Perfiles")
 
@@ -152,65 +148,65 @@ if "user" in st.session_state and st.session_state["user"]:
             st.success(f"Perfil '{perfil_actual}' borrado.")
             st.rerun()
 
-        # ----------------------------
-        # CUENTAS DENTRO DEL PERFIL
-        # ----------------------------
-        st.subheader(f"🏷️ Gestión de Cuentas en {perfil_actual}")
-
+    # ============================
+    # 📦 INVENTARIO DE BRAINROTS
+    # ============================
+    if perfil_actual and perfil_actual != "(ninguno)":
         brainrots, cuentas = load_data(uid, perfil_actual)
 
-        # Añadir nueva cuenta
+        st.subheader(f"📦 Inventario — Perfil: {perfil_actual}")
+
+        # ----------------------------
+        # Gestión de cuentas
+        # ----------------------------
+        st.markdown("### 🏷️ Gestión de cuentas")
         nueva_cuenta = st.text_input("Nombre de nueva cuenta")
-        if st.button("➕ Añadir cuenta"):
+        if st.button("➕ Agregar cuenta"):
             if nueva_cuenta and nueva_cuenta not in cuentas:
                 cuentas.append(nueva_cuenta)
                 save_data(uid, perfil_actual, brainrots, cuentas)
                 st.success(f"Cuenta '{nueva_cuenta}' añadida.")
                 st.rerun()
 
-        # Borrar cuenta
         if cuentas:
-            cuenta_borrar = st.selectbox("Selecciona cuenta para borrar", ["(ninguna)"] + cuentas)
-            if st.button("🗑️ Borrar cuenta") and cuenta_borrar != "(ninguno)":
+            cuenta_borrar = st.selectbox("Selecciona una cuenta para borrar", ["(ninguna)"] + cuentas)
+            if st.button("🗑️ Borrar cuenta") and cuenta_borrar != "(ninguna)":
                 cuentas = [c for c in cuentas if c != cuenta_borrar]
+                for b in brainrots:
+                    if b["cuenta"] == cuenta_borrar:
+                        b["cuenta"] = "(ninguna)"
                 save_data(uid, perfil_actual, brainrots, cuentas)
-                st.success(f"Cuenta '{cuenta_borrar}' borrada (los brainrots mantienen esa etiqueta si existían).")
+                st.success(f"Cuenta '{cuenta_borrar}' borrada.")
                 st.rerun()
 
         # ----------------------------
-        # BRAINROTS EN EL PERFIL
+        # Agregar Brainrot
         # ----------------------------
-        st.subheader(f"🧠 Brainrots en perfil {perfil_actual}")
+        st.markdown("### ➕ Agregar Brainrot")
+        personaje = st.text_input("Nombre del Brainrot")
+        color = st.text_input("Color", value="-")
+        mutaciones = st.text_area("Mutaciones (separadas por coma)")
+        cuenta_sel = st.selectbox("Cuenta", ["(ninguna)"] + cuentas)
+        total = st.number_input("Valor base", min_value=0, step=1000)
 
-        with st.form("add_brainrot"):
-            personaje = st.selectbox("Brainrot", list(BRAINROTS.keys()))
-            color = st.selectbox("Color", list(COLORES.keys()))
-            mutaciones = st.multiselect("Mutaciones", list(MUTACIONES.keys()))
-            cuenta = st.selectbox("Cuenta", ["(ninguna)"] + cuentas)
-            submitted = st.form_submit_button("Agregar")
+        if st.button("Agregar"):
+            brainrots.append({
+                "personaje": personaje,
+                "color": color,
+                "mutaciones": [m.strip() for m in mutaciones.split(",") if m.strip()],
+                "cuenta": cuenta_sel,
+                "total": total
+            })
+            save_data(uid, perfil_actual, brainrots, cuentas)
+            st.success(f"Brainrot '{personaje}' agregado.")
+            st.rerun()
 
-            if submitted:
-                base = BRAINROTS[personaje]
-                total = base * COLORES[color] if color in COLORES else base
-                for m in mutaciones:
-                    total += base * MUTACIONES[m]
-
-                nuevo = {
-                    "personaje": personaje,
-                    "color": color,
-                    "mutaciones": mutaciones,
-                    "cuenta": cuenta,
-                    "total": total
-                }
-                brainrots.append(nuevo)
-                save_data(uid, perfil_actual, brainrots, cuentas)
-                st.success(f"{personaje} agregado en {cuenta} con total {total:,}")
-                st.rerun()
-
-                if brainrots:
+        # ----------------------------
+        # Mostrar tabla
+        # ----------------------------
+        if brainrots:
             df = pd.DataFrame(brainrots)
 
-            # Ordenar
             orden = st.selectbox("Ordenar por", ["Total ↓", "Total ↑", "Cuenta", "Personaje"])
             if orden == "Total ↓":
                 df = df.sort_values(by="total", ascending=False)
@@ -221,11 +217,11 @@ if "user" in st.session_state and st.session_state["user"]:
             elif orden == "Personaje":
                 df = df.sort_values(by="personaje")
 
-            # Mostrar tabla sin índice
+            df["total"] = df["total"].apply(format_num)
             st.dataframe(df.reset_index(drop=True), use_container_width=True)
 
             # ----------------------------
-            # Formatear descripción de brainrots
+            # Opciones de borrar/mover
             # ----------------------------
             def brainrot_label(b):
                 parts = [b["personaje"]]
@@ -240,9 +236,7 @@ if "user" in st.session_state and st.session_state["user"]:
 
             opciones_brainrots = ["(ninguno)"] + [brainrot_label(b) for b in brainrots]
 
-            # ----------------------------
-            # Borrar brainrot
-            # ----------------------------
+            # Borrar
             to_delete = st.selectbox("Selecciona un Brainrot para borrar", opciones_brainrots)
             if st.button("🗑️ Borrar Brainrot") and to_delete != "(ninguno)":
                 personaje_sel = to_delete.split(" | ")[0]
@@ -251,9 +245,7 @@ if "user" in st.session_state and st.session_state["user"]:
                 st.success(f"Brainrot '{to_delete}' borrado.")
                 st.rerun()
 
-            # ----------------------------
-            # Mover brainrot
-            # ----------------------------
+            # Mover
             mover = st.selectbox("Selecciona un Brainrot para mover", opciones_brainrots)
             nueva_cuenta_sel = st.selectbox("Mover a cuenta", ["(ninguna)"] + cuentas)
             if st.button("🔄 Mover Brainrot") and mover != "(ninguno)" and nueva_cuenta_sel != "(ninguna)":
@@ -264,6 +256,10 @@ if "user" in st.session_state and st.session_state["user"]:
                 save_data(uid, perfil_actual, brainrots, cuentas)
                 st.success(f"Brainrot '{personaje_sel}' movido a cuenta '{nueva_cuenta_sel}'.")
                 st.rerun()
+
+else:
+    st.warning("Debes iniciar sesión para ver tus perfiles.")
+
 
 
 
