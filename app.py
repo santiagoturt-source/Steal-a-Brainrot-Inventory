@@ -168,12 +168,12 @@ else:
             if perfil_actual and perfil_actual != "(ninguno)":
                 brainrots, cuentas = load_data(uid, perfil_actual)
 
-                with st.container(border=True):
                     st.subheader(f"📦 Inventario — Perfil: {perfil_actual}")
 
                     # ----------------------------
                     # Gestión de cuentas
                     # ----------------------------
+                with st.container(border=True):
                     st.markdown("### 🏷️ Gestión de cuentas")
                     nueva_cuenta = st.text_input("Nombre de nueva cuenta")
                     if st.button("➕ Agregar cuenta"):
@@ -456,6 +456,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
