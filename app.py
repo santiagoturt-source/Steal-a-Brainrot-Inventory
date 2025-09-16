@@ -438,17 +438,18 @@ else:
                         st.rerun()
 
                     if brainrots:
-    df = pd.DataFrame(brainrots)
-
-    orden = st.selectbox("Ordenar por", ["Total ↓", "Total ↑", "Cuenta", "Brainrot"])
-    if orden == "Total ↓":
-        df = df.sort_values(by="Total", ascending=False)
-    elif orden == "Total ↑":
-        df = df.sort_values(by="Total", ascending=True)
-    elif orden == "Cuenta":
-        df = df.sort_values(by="Cuenta")
-    elif orden == "Brainrot":
-        df = df.sort_values(by="Brainrot")
+                        
+                        df = pd.DataFrame(brainrots)
+                        
+                        orden = st.selectbox("Ordenar por", ["Total ↓", "Total ↑", "Cuenta", "Brainrot"])
+                        if orden == "Total ↓":
+                            df = df.sort_values(by="Total", ascending=False)
+                        elif orden == "Total ↑":
+                            df = df.sort_values(by="Total", ascending=True)
+                        elif orden == "Cuenta":
+                            df = df.sort_values(by="Cuenta")
+                        elif orden == "Brainrot":
+                            df = df.sort_values(by="Brainrot")
 
     # 🔹 Aplicar formateo de números
     df["Total"] = df["Total"].apply(format_num)
@@ -463,6 +464,7 @@ else:
         df.style.hide(axis="index"),
         use_container_width=True
     )
+
 
                         # ----------------------------
                         # Borrar / Mover Brainrots
@@ -513,6 +515,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
