@@ -104,68 +104,6 @@ def save_data(uid, perfil, brainrots, cuentas):
 
 st.title("📒 Inventario de Brainrots")
 
-from streamlit_cookies_manager import EncryptedCookieManager
-
-# ============================
-# 🔐 CONFIGURACIÓN DE COOKIES
-# ============================
-
-cookies = EncryptedCookieManager(
-    prefix="brainrot_app",  
-    password="clave-super-secreta-123456789"  # cámbiala por una clave propia
-)
-
-if not cookies.ready():
-    st.stop()
-
-# Restaurar sesión desde cookies si existe
-if "user" not in st.session_state and "uid" in cookies and "email" in cookies:
-    st.session_state["user"] = {
-        "uid": cookies["uid"],
-        "email": cookies["email"]
-    }
-
-# ============================
-# 🔑 LOGIN / SIGNUP
-# ============================
-if "user" not in st.session_state:
-    tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
-
-    # ----------------------------
-    # TAB LOGIN
-    # ----------------------------
-    with tabs[0]:
-        email = st.text_input("Correo", key="login_email_input")
-        password = st.text_input("Contraseña", type="password", key="login_pass_input")
-        if st.button("Entrar", key="login_button"):
-            user = login(email, password)
-            if "error" in user:
-                st.error(user["error"]["message"])
-            else:
-                st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
-                st.success(f"✅ Sesión iniciada: {user['email']}")
-                st.rerun()
-
-    # ----------------------------
-    # TAB REGISTRO
-    # ----------------------------
-    with tabs[1]:
-        new_email = st.text_input("Correo nuevo", key="signup_email_input")
-        new_pass = st.text_input(
-            "Contraseña nueva", type="password",
-            key="signup_pass_input",
-            placeholder="Mínimo 6 caracteres"
-        )
-        if st.button("Crear cuenta", key="signup_button"):
-            user = signup(new_email, new_pass)
-            if "error" in user:
-                st.error(user["error"]["message"])
-            else:
-                st.success(f"✅ Cuenta creada: {new_email}. Ahora puedes iniciar sesión.")
-
-else:
-    st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
-
 # ============================
 # 🖥️ INTERFAZ LOGIN / SIGNUP
 # ============================
@@ -184,7 +122,10 @@ if "user" not in st.session_state:
             if "error" in user:
                 st.error(user["error"]["message"])
             else:
-                st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
+                st.session_state["user"] = {
+                    "uid": user["localId"],
+                    "email": user["email"]
+                }
                 st.success(f"✅ Sesión iniciada: {user['email']}")
                 st.rerun()
 
@@ -556,6 +497,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
