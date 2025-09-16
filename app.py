@@ -253,61 +253,68 @@ if "user" in st.session_state and st.session_state["user"]:
         # ----------------------------
         # Mostrar tabla
         # ----------------------------
-        if brainrots:
-            df = pd.DataFrame(brainrots)
+        # ----------------------------
+# Mostrar tabla y gestionar Brainrots
+# ----------------------------
+if brainrots:
+    df = pd.DataFrame(brainrots)
 
-            orden = st.selectbox("Ordenar por", ["Total ↓", "Total ↑", "Cuenta", "Brainrot"])
-            if orden == "Total ↓":
-                df = df.sort_values(by="Total", ascending=False)
-            elif orden == "Total ↑":
-                df = df.sort_values(by="Total", ascending=True)
-            elif orden == "Cuenta":
-                df = df.sort_values(by="Cuenta")
-            elif orden == "Brainrot":
-                df = df.sort_values(by="Brainrot")
+    # Ordenamiento
+    orden = st.selectbox("Ordenar por", ["Total ↓", "Total ↑", "Cuenta", "Brainrot"])
+    if orden == "Total ↓":
+        df = df.sort_values(by="Total", ascending=False)
+    elif orden == "Total ↑":
+        df = df.sort_values(by="Total", ascending=True)
+    elif orden == "Cuenta":
+        df = df.sort_values(by="Cuenta")
+    elif orden == "Brainrot":
+        df = df.sort_values(by="Brainrot")
 
-            df["Total"] = df["Total"].apply(format_num)
-            st.dataframe(df.reset_index(drop=True), use_container_width=True)
+    # Mostrar tabla limpia
+    df_vista = df.copy()
+    df_vista["Total"] = df_vista["Total"].apply(format_num)
+    st.markdown("### 📊 Inventario de Brainrots")
+    st.dataframe(df_vista[["Brainrot", "Color", "Mutaciones", "Total", "Cuenta"]].reset_index(drop=True), use_container_width=True)
 
-            # ----------------------------
-            # Función para mostrar Brainrots en borrar/mover
-            # ----------------------------
-            def brainrot_label(b):
-                parts = [b["Brainrot"]]
-                parts.append(f"Total: {format_num(b['Total'])}")
-                if b.get("Cuenta") and b["Cuenta"] != "(ninguna)":
-                    parts.append(f"Cuenta: {b['Cuenta']}")
-                if b.get("Color") and b["Color"] != "-":
-                    parts.append(f"Color: {b['Color']}")
-                if b.get("Mutaciones"):
-                    parts.append(f"Mutaciones: {', '.join(b['Mutaciones'])}")
-                return " | ".join(parts)
+    # ----------------------------
+    # Función para mostrar Brainrots en borrar/mover
+    # ----------------------------
+    def brainrot_label(b):
+        parts = [b["Brainrot"]]
+        parts.append(f"Total: {format_num(b['Total'])}")
+        if b.get("Cuenta") and b["Cuenta"] != "(ninguna)":
+            parts.append(f"Cuenta: {b['Cuenta']}")
+        if b.get("Color") and b["Color"] != "-":
+            parts.append(f"Color: {b['Color']}")
+        if b.get("Mutaciones"):
+            parts.append(f"Mutaciones: {', '.join(b['Mutaciones'])}")
+        return " | ".join(parts)
 
-            opciones_brainrots = ["(ninguno)"] + [brainrot_label(b) for b in brainrots]
+    opciones_brainrots = ["(ninguno)"] + [brainrot_label(b) for b in brainrots]
 
-            # Borrar
-            to_delete = st.selectbox("Selecciona un Brainrot para borrar", opciones_brainrots)
-            if st.button("🗑️ Borrar Brainrot") and to_delete != "(ninguno)":
-                personaje_sel = to_delete.split(" | ")[0]
-                brainrots = [b for b in brainrots if b["Brainrot"] != personaje_sel]
-                save_data(uid, perfil_actual, brainrots, cuentas)
-                st.success(f"Brainrot '{to_delete}' borrado.")
-                st.rerun()
+    st.markdown("### 🗑️🔄 Borrar / Mover Brainrots")
 
-            # Mover
-            mover = st.selectbox("Selecciona un Brainrot para mover", opciones_brainrots)
-            nueva_cuenta_sel = st.selectbox("Mover a cuenta", ["(ninguna)"] + cuentas)
-            if st.button("🔄 Mover Brainrot") and mover != "(ninguno)" and nueva_cuenta_sel != "(ninguna)":
-                personaje_sel = mover.split(" | ")[0]
-                for b in brainrots:
-                    if b["Brainrot"] == personaje_sel:
-                        b["Cuenta"] = nueva_cuenta_sel
-                save_data(uid, perfil_actual, brainrots, cuentas)
-                st.success(f"Brainrot '{personaje_sel}' movido a cuenta '{nueva_cuenta_sel}'.")
-                st.rerun()
+    # Borrar
+    to_delete = st.selectbox("Selecciona un Brainrot para borrar", opciones_brainrots)
+    if st.button("🗑️ Borrar Brainrot") and to_delete != "(ninguno)":
+        personaje_sel = to_delete.split(" | ")[0]
+        brainrots = [b for b in brainrots if b["Brainrot"] != personaje_sel]
+        save_data(uid, perfil_actual, brainrots, cuentas)
+        st.success(f"Brainrot '{to_delete}' borrado.")
+        st.rerun()
 
-else:
-    st.warning("Debes iniciar sesión para ver tus perfiles.")
+    # Mover
+    mover = st.selectbox("Selecciona un Brainrot para mover", opciones_brainrots)
+    nueva_cuenta_sel = st.selectbox("Mover a cuenta", ["(ninguna)"] + cuentas)
+    if st.button("🔄 Mover Brainrot") and mover != "(ninguno)" and nueva_cuenta_sel != "(ninguna)":
+        personaje_sel = mover.split(" | ")[0]
+        for b in brainrots:
+            if b["Brainrot"] == personaje_sel:
+                b["Cuenta"] = nueva_cuenta_sel
+        save_data(uid, perfil_actual, brainrots, cuentas)
+        st.success(f"Brainrot '{personaje_sel}' movido a cuenta '{nueva_cuenta_sel}'.")
+        st.rerun()
+
 
 
 
