@@ -5,10 +5,10 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import pyrebase
 
-# ---- CONFIGURACIÓN DE PÁGINA ----
+# ---- CONFIGURACIÓN ----
 st.set_page_config(page_title="Inventario con Usuarios + Perfiles", layout="wide")
 
-# ---- ESTILOS ----
+# ---- CSS ----
 st.markdown("""
     <style>
         .card {
@@ -55,7 +55,7 @@ with st.container():
                 user = auth.sign_in_with_email_and_password(email, password)
                 st.session_state["user"] = user
                 st.success("Sesión iniciada correctamente")
-            except Exception as e:
+            except Exception:
                 st.error("Error al iniciar sesión")
 
     with tab_register:
@@ -65,7 +65,7 @@ with st.container():
             try:
                 user = auth.create_user_with_email_and_password(email_new, password_new)
                 st.success("Cuenta creada correctamente")
-            except Exception as e:
+            except Exception:
                 st.error("Error al crear cuenta")
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -190,6 +190,8 @@ with st.container():
             st.rerun()
 
     st.markdown("</div>", unsafe_allow_html=True)
+
+
 
 
 
