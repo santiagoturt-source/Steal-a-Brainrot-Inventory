@@ -450,20 +450,17 @@ else:
                             df = df.sort_values(by="Cuenta")
                         elif orden == "Brainrot":
                             df = df.sort_values(by="Brainrot")
-
-    # 🔹 Aplicar formateo de números
-    df["Total"] = df["Total"].apply(format_num)
-
-    # 🔹 Eliminar columna ID y reorganizar columnas
-    df = df.drop(columns=["id"], errors="ignore")
-    columnas = ["Total", "Brainrot", "Mutaciones", "Color", "Cuenta"]
-    df = df[columnas]
-
-    # 🔹 Mostrar tabla sin índices
-    st.dataframe(
-        df.style.hide(axis="index"),
-        use_container_width=True
-    )
+                            
+                            df["Total"] = df["Total"].apply(format_num)
+                            
+                            df = df.drop(columns=["id"], errors="ignore")}
+                            columnas = ["Total", "Brainrot", "Mutaciones", "Color", "Cuenta"]
+                            df = df[columnas]
+                            
+                            st.dataframe(
+                                df.style.hide(axis="index"),
+                                use_container_width=True
+                            )
 
 
                         # ----------------------------
@@ -515,6 +512,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
