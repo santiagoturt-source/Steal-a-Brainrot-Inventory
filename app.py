@@ -103,6 +103,19 @@ def save_data(uid, perfil, brainrots, cuentas):
 
 st.title("📒 Inventario de Brainrots")
 
+from streamlit_cookies_manager import EncryptedCookieManager
+
+# ============================
+# COOKIES (para recordar sesión)
+# ============================
+cookies = EncryptedCookieManager(prefix="brainrot_app", password="clave_super_segura")
+if not cookies.ready():
+    st.stop()
+
+# Si ya hay cookies guardadas, restaurar sesión automáticamente
+if "user" not in st.session_state and "uid" in cookies and "email" in cookies:
+    st.session_state["user"] = {"uid": cookies["uid"], "email": cookies["email"]}
+
 # ============================
 # LOGIN / SIGNUP
 # ============================
@@ -121,8 +134,11 @@ if "user" not in st.session_state:
             if "error" in user:
                 st.error(user["error"]["message"])
             else:
-                # ✅ Guardamos la sesión en st.session_state
+                # ✅ Guardamos sesión en session_state y cookies
                 st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
+                cookies["uid"] = user["localId"]
+                cookies["email"] = user["email"]
+                cookies.save()
                 st.success(f"Sesión iniciada: {user['email']}")
                 st.rerun()
 
@@ -150,6 +166,12 @@ else:
 
     # Botón de cerrar sesión
     if st.button("🚪 Cerrar sesión", key="logout_button"):
+        # ❌ Eliminar sesión de cookies y de session_state
+        if "uid" in cookies:
+            del cookies["uid"]
+        if "email" in cookies:
+            del cookies["email"]
+        cookies.save()
         del st.session_state["user"]
         st.rerun()
 
@@ -498,6 +520,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
