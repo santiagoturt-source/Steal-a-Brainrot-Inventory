@@ -347,13 +347,15 @@ else:
 }
 
                     COLORES = {
-                        "-": 1,
-                        "Gold": 1.25,
-                        "Rainbow": 10,
-                        "Galaxy": 7,
-                        "Candy": 4,
-                        "Diamond": 17
-                    }
+    "-": 0,
+    "🪙 Gold": 1.25,
+    "💎 Diamond": 1.5,
+    "🩸 Bloodrot": 2,
+    "🍬 Candy": 4,
+    "♨️ Lava": 6,
+    "🌌 Galaxy": 7,
+    "🌈 Rainbow": 10
+}
 
                     MUTACIONES = {
     "🌧️ Rain": 1.5,
@@ -374,13 +376,13 @@ else:
     "🦀 Crab Rave": 5,
     "🌐 Glitch": 5,
     "🎶 Concert / Disco": 5,
-    "🇧🇷 BR Brazil": 5,
+    "🇧🇷 Brazil": 5,
     "🔥 Fire (Solar Flare)": 6,
     "🐱 Nyan Cat": 6,
     "🎆 4th of July Fireworks": 6,
     "⚡ Lightning": 6,
     "🍓 Strawberry": 8,
-    "⚙️ Rainbow Machine": 10
+    "⚙️🌈 Rainbow Machine": 10
 }
 
                     personaje = st.selectbox(
@@ -479,6 +481,7 @@ else:
                 del st.session_state["user"]
                 st.success("Sesión cerrada.")
                 st.rerun()
+
 
 
 
