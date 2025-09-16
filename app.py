@@ -126,39 +126,45 @@ if "user" not in st.session_state and "uid" in cookies and "email" in cookies:
     }
 
 # ============================
-# 🔑 LOGIN / SIGNUP CON TOKEN
+# 🔑 LOGIN / SIGNUP
 # ============================
+if "user" not in st.session_state:
+    tabs = st.tabs(["🔑 Iniciar sesión", "🆕 Registrarse"])
 
-def save_session_token(uid, email):
-    """Guarda un token de sesión en Firestore con expiración de 7 días."""
-    token_id = str(uuid.uuid4())
-    expires_at = int(time.time()) + (7 * 24 * 60 * 60)  # 7 días en segundos
-    db.collection("sessions").document(token_id).set({
-        "uid": uid,
-        "email": email,
-        "expires_at": expires_at
-    })
-    st.session_state["session_token"] = token_id
-    st.session_state["user"] = {"uid": uid, "email": email}
+    # ----------------------------
+    # TAB LOGIN
+    # ----------------------------
+    with tabs[0]:
+        email = st.text_input("Correo", key="login_email_input")
+        password = st.text_input("Contraseña", type="password", key="login_pass_input")
+        if st.button("Entrar", key="login_button"):
+            user = login(email, password)
+            if "error" in user:
+                st.error(user["error"]["message"])
+            else:
+                st.session_state["user"] = {"uid": user["localId"], "email": user["email"]}
+                st.success(f"✅ Sesión iniciada: {user['email']}")
+                st.rerun()
 
-def load_session_token():
-    """Carga la sesión si existe un token guardado en session_state."""
-    if "session_token" in st.session_state:
-        token_id = st.session_state["session_token"]
-        doc = db.collection("sessions").document(token_id).get()
-        if doc.exists:
-            data = doc.to_dict()
-            if int(time.time()) < data["expires_at"]:  # token válido
-                st.session_state["user"] = {"uid": data["uid"], "email": data["email"]}
-                return True
-    return False
+    # ----------------------------
+    # TAB REGISTRO
+    # ----------------------------
+    with tabs[1]:
+        new_email = st.text_input("Correo nuevo", key="signup_email_input")
+        new_pass = st.text_input(
+            "Contraseña nueva", type="password",
+            key="signup_pass_input",
+            placeholder="Mínimo 6 caracteres"
+        )
+        if st.button("Crear cuenta", key="signup_button"):
+            user = signup(new_email, new_pass)
+            if "error" in user:
+                st.error(user["error"]["message"])
+            else:
+                st.success(f"✅ Cuenta creada: {new_email}. Ahora puedes iniciar sesión.")
 
-def clear_session():
-    """Cierra sesión borrando el token."""
-    if "session_token" in st.session_state:
-        db.collection("sessions").document(st.session_state["session_token"]).delete()
-    st.session_state.clear()
-    st.rerun()
+else:
+    st.success(f"✅ Bienvenido {st.session_state['user']['email']}")
 
 # ============================
 # 🖥️ INTERFAZ LOGIN / SIGNUP
@@ -538,6 +544,7 @@ else:
                     st.session_state.pop("user", None)  # Elimina la sesión
                     st.success("Sesión cerrada correctamente.")
                     st.rerun()  # 🔄 Fuerza recarga de la app -> vuelve al login
+
 
 
 
