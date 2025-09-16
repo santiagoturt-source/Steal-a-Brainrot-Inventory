@@ -112,14 +112,14 @@ if "user" in st.session_state and st.session_state["user"]:
         if nuevo_perfil:
             create_profile(uid, nuevo_perfil)
             st.success(f"Perfil '{nuevo_perfil}' creado.")
-            st.experimental_rerun()
+            st.rerun()
 
     # Borrar perfil seleccionado
     if perfil_actual and perfil_actual != "(ninguno)":
         if st.button(f"🗑️ Borrar perfil '{perfil_actual}'"):
             delete_profile(uid, perfil_actual)
             st.success(f"Perfil '{perfil_actual}' borrado.")
-            st.experimental_rerun()
+            st.rerun()
 
 else:
     st.warning("Debes iniciar sesión para ver tus perfiles.")
