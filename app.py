@@ -439,6 +439,19 @@ else:
                             key="orden"
                         )
                         
+                        if "cuenta_filtro" not in st.session_state:
+                            st.session_state["cuenta_filtro"] = "Todas"
+                            
+                        cuentas = ["Todas"] + sorted(df["Cuenta"].unique().tolist())
+                        cuenta_filtro = st.selectbox(
+                            "Filtrar por Cuenta",
+                            cuentas,
+                            key="cuenta_filtro"
+                        )
+                        
+                        if st.session_state["cuenta_filtro"] != "Todas":
+                            df = df[df["Cuenta"] == st.session_state["cuenta_filtro"]]
+                            
                         if st.session_state["orden"] == "Total ↓":
                             df = df.sort_values(by="Total", ascending=False)
                         elif st.session_state["orden"] == "Total ↑":
@@ -511,6 +524,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
