@@ -438,33 +438,33 @@ else:
                         st.rerun()
 
                     if brainrots:
-    df = pd.DataFrame(brainrots)
-    
-    orden = st.selectbox(
-        "Ordenar por", 
-        ["Total ↓", "Total ↑", "Cuenta", "Brainrot", "Cuenta + Total ↓"]
-    )
-
-    if orden == "Total ↓":
-        df = df.sort_values(by="Total", ascending=False)
-    elif orden == "Total ↑":
-        df = df.sort_values(by="Total", ascending=True)
-    elif orden == "Cuenta":
-        df = df.sort_values(by="Cuenta")
-    elif orden == "Brainrot":
-        df = df.sort_values(by="Brainrot")
-    elif orden == "Cuenta + Total ↓":
-        df = df.sort_values(by=["Cuenta", "Total"], ascending=[True, False])
-    
-    df["Total"] = df["Total"].apply(format_num)
-    df = df.drop(columns=["id"], errors="ignore")
-    columnas = ["Brainrot", "Cuenta", "Total", "Color", "Mutaciones"]
-    df = df[columnas]
-    
-    st.dataframe(
-        df.style.hide(axis="index"),
-        use_container_width=True
-    )
+                        df = pd.DataFrame(brainrots)
+                        
+                        orden = st.selectbox(
+                            "Ordenar por", 
+                            ["Total ↓", "Total ↑", "Cuenta", "Brainrot", "Cuenta + Total ↓"]
+                        )
+                        
+                        if orden == "Total ↓":
+                            df = df.sort_values(by="Total", ascending=False)
+                        elif orden == "Total ↑":
+                            df = df.sort_values(by="Total", ascending=True)
+                        elif orden == "Cuenta":
+                            df = df.sort_values(by="Cuenta")
+                        elif orden == "Brainrot":
+                            df = df.sort_values(by="Brainrot")
+                        elif orden == "Cuenta + Total ↓":
+                            df = df.sort_values(by=["Cuenta", "Total"], ascending=[True, False])
+                            
+                        df["Total"] = df["Total"].apply(format_num)
+                        df = df.drop(columns=["id"], errors="ignore")
+                        columnas = ["Brainrot", "Cuenta", "Total", "Color", "Mutaciones"]
+                        df = df[columnas]
+                        
+                        st.dataframe(
+                            df.style.hide(axis="index"),
+                            use_container_width=True
+                        )
 
 
                         # ----------------------------
@@ -516,6 +516,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
