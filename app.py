@@ -9,27 +9,17 @@ import os, json
 
 TOKEN_FILE = "session_token.json"
 
+# ✅ Guardar sesión (solo en memoria de ese usuario)
 def save_session_token(uid, email):
-    with open(TOKEN_FILE, "w") as f:
-        json.dump({"uid": uid, "email": email}, f)
     st.session_state["user"] = {"uid": uid, "email": email}
 
+# ✅ Verificar si hay sesión activa
 def load_session_token():
-    if os.path.exists(TOKEN_FILE):
-        try:
-            with open(TOKEN_FILE, "r") as f:
-                data = json.load(f)
-                if "uid" in data and "email" in data:
-                    st.session_state["user"] = data
-                    return True
-        except Exception:
-            return False
-    return False
+    return "user" in st.session_state
 
+# ✅ Cerrar sesión
 def clear_session_token():
-    if os.path.exists(TOKEN_FILE):
-        os.remove(TOKEN_FILE)
-    st.session_state["user"] = None
+    st.session_state.pop("user", None)
 # ============================
 # CONFIGURACIÓN FIREBASE
 # ============================
@@ -516,6 +506,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
