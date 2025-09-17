@@ -430,20 +430,24 @@ else:
                     if brainrots:
                         df = pd.DataFrame(brainrots)
                         
+                        if "orden" not in st.session_state:
+                            st.session_state["orden"] = "Total ↓"
+                            
                         orden = st.selectbox(
-                            "Ordenar por", 
-                            ["Total ↓", "Total ↑", "Cuenta", "Brainrot", "Cuenta + Total ↓"]
+                            "Ordenar por",
+                            ["Total ↓", "Total ↑", "Cuenta", "Brainrot", "Cuenta + Total ↓"],
+                            key="orden"
                         )
                         
-                        if orden == "Total ↓":
+                        if st.session_state["orden"] == "Total ↓":
                             df = df.sort_values(by="Total", ascending=False)
-                        elif orden == "Total ↑":
+                        elif st.session_state["orden"] == "Total ↑":
                             df = df.sort_values(by="Total", ascending=True)
-                        elif orden == "Cuenta":
+                        elif st.session_state["orden"] == "Cuenta":
                             df = df.sort_values(by="Cuenta")
-                        elif orden == "Brainrot":
+                        elif st.session_state["orden"] == "Brainrot":
                             df = df.sort_values(by="Brainrot")
-                        elif orden == "Cuenta + Total ↓":
+                        elif st.session_state["orden"] == "Cuenta + Total ↓":
                             df = df.sort_values(by=["Cuenta", "Total"], ascending=[True, False])
                             
                         df["Total"] = df["Total"].apply(format_num)
@@ -455,6 +459,7 @@ else:
                             df.style.hide(axis="index"),
                             use_container_width=True
                         )
+
 
 
                         # ----------------------------
@@ -506,6 +511,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
