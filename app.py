@@ -571,12 +571,13 @@ st.markdown(
     """
     <div style='text-align: left;'>
         <a href="https://www.roblox.com/es/games/109983668079237/Steal-a-Brainrot" target="_blank" rel="noopener noreferrer">
-            🎮 Jugar Steal a Brainrot en Roblox
+            Jugar Steal a Brainrot en Roblox 🎮 
         </a>
     </div>
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
