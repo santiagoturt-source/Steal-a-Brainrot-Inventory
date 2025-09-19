@@ -3,21 +3,18 @@ import requests
 import firebase_admin
 from firebase_admin import credentials, firestore
 import pandas as pd
-import uuid  # ✅ Para IDs únicos
+import uuid 
 import time
 import os, json
 
 TOKEN_FILE = "session_token.json"
 
-# ✅ Guardar sesión (solo en memoria de ese usuario)
 def save_session_token(uid, email):
     st.session_state["user"] = {"uid": uid, "email": email}
 
-# ✅ Verificar si hay sesión activa
 def load_session_token():
     return "user" in st.session_state
 
-# ✅ Cerrar sesión
 def clear_session_token():
     st.session_state.pop("user", None)
 # ============================
@@ -524,6 +521,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
