@@ -416,7 +416,7 @@ else:
                             COLORES[color],
                             [MUTACIONES[m] for m in mutaciones],
                         )
-                        st.info(f"Vista previa del total: {format_num(total_preview)}")
+                        st.info(f"Total: {format_num(total_preview)}")
                     else:
                         st.info("Selecciona un Brainrot para ver la vista previa del total.")
 
@@ -532,6 +532,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
