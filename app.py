@@ -447,7 +447,7 @@ else:
                         )
 
                         if st.session_state["cuenta_filtro"] != "Todas":
-                            df = df[df["Cuenta"] == st.session_state["cuenta_filtro"]
+                            df = df["Cuenta"] == st.session_state["cuenta_filtro"]
                             
                         if st.session_state["orden"] == "Total ↓":
                             df = df.sort_values(by="Total", ascending=False)
@@ -521,6 +521,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
