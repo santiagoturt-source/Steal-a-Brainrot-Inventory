@@ -406,22 +406,33 @@ else:
                     mutaciones = st.multiselect("Mutaciones", list(MUTACIONES.keys()))
                     cuenta_sel = st.selectbox("Cuenta", ["(ninguna)"] + cuentas)
 
-                    if st.button("Agregar") and personaje != "(ninguno)":
-                        nombre = personaje.split(" — ")[0]
-                        base = BRAINROTS[nombre]
+                    total_preview = None
+                    nombre_seleccionado = None
+                    if personaje != "(ninguno)":
+                        nombre_seleccionado = personaje.split(" — ")[0]
+                        base = BRAINROTS[nombre_seleccionado]
+                        total_preview = calcular_total(
+                            base,
+                            COLORES[color],
+                            [MUTACIONES[m] for m in mutaciones],
+                        )
+                        st.info(f"Vista previa del total: {format_num(total_preview)}")
+                    else:
+                        st.info("Selecciona un Brainrot para ver la vista previa del total.")
 
-                        total = calcular_total(base, COLORES[color], [MUTACIONES[m] for m in mutaciones])
-
+                    if st.button("Agregar") and nombre_seleccionado:
                         brainrots.append({
                             "id": str(uuid.uuid4()),  # ID invisible
-                            "Brainrot": nombre,
+                            "Brainrot": nombre_seleccionado,
                             "Color": color,
                             "Mutaciones": mutaciones,
                             "Cuenta": cuenta_sel,
-                            "Total": total
+                            "Total": total_preview
                         })
                         save_data(uid, perfil_actual, brainrots, cuentas)
-                        st.success(f"Brainrot '{nombre}' agregado con total {format_num(total)}.")
+                        st.success(
+                            f"Brainrot '{nombre_seleccionado}' agregado con total {format_num(total_preview)}."
+                        )
                         st.rerun()
 
                     if brainrots:
@@ -521,6 +532,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
