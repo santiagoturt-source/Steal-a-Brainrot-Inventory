@@ -59,6 +59,21 @@ def calcular_total(base, color_mult, mutaciones_mults):
         total += base * max(m - 1, 0)
     return total
 
+
+def confirm_deletion(state_key, message):
+    """Muestra un mensaje de confirmación antes de borrar y devuelve el valor almacenado si se confirma."""
+    st.warning(message)
+    col_confirm, col_cancel = st.columns(2)
+    confirmed_value = None
+    with col_confirm:
+        if st.button("✅ Confirmar", key=f"{state_key}_confirm"):
+            confirmed_value = st.session_state.pop(state_key, None)
+            return confirmed_value
+    with col_cancel:
+        if st.button("❌ Cancelar", key=f"{state_key}_cancel"):
+            st.session_state.pop(state_key, None)
+    return confirmed_value
+
 # ============================
 # FUNCIONES DE AUTENTICACIÓN
 # ============================
@@ -178,9 +193,18 @@ else:
 
             if perfil_actual and perfil_actual != "(ninguno)":
                 if st.button(f"🗑️ Borrar perfil '{perfil_actual}'"):
-                    delete_profile(uid, perfil_actual)
-                    st.success(f"Perfil '{perfil_actual}' borrado.")
-                    st.rerun()
+                    st.session_state["confirm_delete_profile"] = perfil_actual
+
+                if "confirm_delete_profile" in st.session_state:
+                    perfil_to_delete = st.session_state["confirm_delete_profile"]
+                    confirmed = confirm_deletion(
+                        "confirm_delete_profile",
+                        f"⚠️ ¿Seguro que deseas borrar el perfil '{perfil_to_delete}'? Esta acción no se puede deshacer.",
+                    )
+                    if confirmed:
+                        delete_profile(uid, perfil_to_delete)
+                        st.success(f"Perfil '{perfil_to_delete}' borrado.")
+                        st.rerun()
 
     # ============================
     # INVENTARIO DE BRAINROTS
@@ -207,14 +231,23 @@ else:
 
                     if cuentas:
                         cuenta_borrar = st.selectbox("Selecciona una cuenta para borrar", ["(ninguna)"] + cuentas)
-                        if st.button("🗑️ Borrar cuenta") and cuenta_borrar != "(ninguno)":
-                            cuentas = [c for c in cuentas if c != cuenta_borrar]
-                            for b in brainrots:
-                                if b["Cuenta"] == cuenta_borrar:
-                                    b["Cuenta"] = "(ninguna)"
-                            save_data(uid, perfil_actual, brainrots, cuentas)
-                            st.success(f"Cuenta '{cuenta_borrar}' borrada.")
-                            st.rerun()
+                        if st.button("🗑️ Borrar cuenta") and cuenta_borrar != "(ninguna)":
+                            st.session_state["confirm_delete_account"] = cuenta_borrar
+
+                        if "confirm_delete_account" in st.session_state:
+                            cuenta_to_delete = st.session_state["confirm_delete_account"]
+                            confirmed_account = confirm_deletion(
+                                "confirm_delete_account",
+                                f"⚠️ ¿Seguro que deseas borrar la cuenta '{cuenta_to_delete}'? Los brainrots asociados quedarán sin cuenta.",
+                            )
+                            if confirmed_account:
+                                cuentas = [c for c in cuentas if c != confirmed_account]
+                                for b in brainrots:
+                                    if b["Cuenta"] == confirmed_account:
+                                        b["Cuenta"] = "(ninguna)"
+                                save_data(uid, perfil_actual, brainrots, cuentas)
+                                st.success(f"Cuenta '{confirmed_account}' borrada.")
+                                st.rerun()
 
                     # ----------------------------
                     # Agregar Brainrot
@@ -532,6 +565,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
