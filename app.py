@@ -566,6 +566,20 @@ else:
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
 
+st.divider()
+st.markdown(
+    """
+    <div style='text-align: center;'>
+        <a href="https://www.roblox.com/games/17740582826/Steal-a-Brainrot" target="_blank" rel="noopener noreferrer">
+            🎮 Jugar Steal a Brainrot en Roblox
+        </a>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
 
 
 
