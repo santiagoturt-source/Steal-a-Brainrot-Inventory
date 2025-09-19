@@ -331,7 +331,7 @@ else:
     "Blackhole Goat": 400000,
     "Chachechi": 400000,
     "Agaririni la Palini": 425000,
-    "Los Spyderinis": 450000,
+    "Los Spyderinis": 550000,
     "Fragola La La La": 450000,
     "Extinct Tralalero": 450000,
     "Los Tralaleritos": 500000,
@@ -532,6 +532,7 @@ else:
                     st.session_state.pop("user", None)
                     st.success("✅ Sesión cerrada correctamente.")
                     st.rerun()
+
 
 
 
