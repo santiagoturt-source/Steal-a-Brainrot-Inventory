@@ -169,8 +169,6 @@ def save_data(uid, perfil, brainrots, cuentas):
 # INTERFAZ STREAMLIT
 # ============================
 
-apply_theme()
-
 st.title("📒 Inventario de Brainrots")
 
 # ============================
@@ -629,6 +627,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
