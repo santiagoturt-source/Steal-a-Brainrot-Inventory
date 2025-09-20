@@ -609,7 +609,6 @@ else:
             st.subheader("⚙️ Opciones")
 
             if "user" in st.session_state and st.session_state["user"]:
-                st.markdown("### 🔐 Sesión")
                 if st.button("🚪 Cerrar sesión", key="logout_button"):
                     clear_session_token()
                     st.session_state.pop("user", None)
@@ -627,6 +626,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
