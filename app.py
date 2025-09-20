@@ -364,6 +364,7 @@ else:
     "Blackhole Goat": 400000,
     "Chachechi": 400000,
     "Agaririni la Palini": 425000,
+    "La Cucaracha": 425000,
     "Los Spyderinis": 550000,
     "Fragola La La La": 450000,
     "Extinct Tralalero": 450000,
@@ -379,6 +380,7 @@ else:
     "Chicleteira Bicicleteira": 3500000,
     "Los Nooo My Hotspotsitos": 5000000,
     "La Grande Combinasson": 10000000,
+    "Mariachi Corazoni": 12500000,
     "Los Combinasonas": 15000000,
     "Nuclearo Dinosauro": 15000000,
     "Los Hotspoisitos": 20000000,
@@ -577,6 +579,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
