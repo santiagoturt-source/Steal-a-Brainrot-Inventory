@@ -740,25 +740,6 @@ else:
         with st.container(border=True):
             st.subheader("⚙️ Opciones")
 
-            st.markdown("### 🎨 Temas")
-            theme_names = list(THEMES.keys())
-            current_theme = st.session_state.get("theme", DEFAULT_THEME)
-            if current_theme not in THEMES:
-                current_theme = DEFAULT_THEME
-                st.session_state["theme"] = DEFAULT_THEME
-
-            selected_theme = st.selectbox(
-                "Elige un tema para la interfaz",
-                theme_names,
-                index=theme_names.index(current_theme),
-                key="theme_select",
-                help="Personaliza los colores generales de la aplicación.",
-            )
-
-            if selected_theme != current_theme:
-                st.session_state["theme"] = selected_theme
-                st.rerun()
-
             if "user" in st.session_state and st.session_state["user"]:
                 st.markdown("### 🔐 Sesión")
                 if st.button("🚪 Cerrar sesión", key="logout_button"):
@@ -778,6 +759,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
