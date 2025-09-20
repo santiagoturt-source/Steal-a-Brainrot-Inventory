@@ -9,14 +9,51 @@ import os, json
 
 TOKEN_FILE = "session_token.json"
 
-def save_session_token(uid, email):
-    st.session_state["user"] = {"uid": uid, "email": email}
+
+def _write_token_file(data):
+    try:
+        with open(TOKEN_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f)
+    except OSError as exc:
+        st.warning(f"No se pudo guardar la sesión localmente: {exc}")
+
+
+def save_session_token(uid, email, id_token=None, refresh_token=None):
+    """Guarda la sesión en memoria y en disco para persistir entre recargas."""
+    user_data = {
+        "uid": uid,
+        "email": email,
+        "id_token": id_token,
+        "refresh_token": refresh_token,
+    }
+    st.session_state["user"] = user_data
+    _write_token_file(user_data)
+
 
 def load_session_token():
-    return "user" in st.session_state
+    """Carga la sesión existente desde memoria o desde archivo."""
+    if "user" in st.session_state:
+        return True
+
+    if os.path.exists(TOKEN_FILE):
+        try:
+            with open(TOKEN_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            st.session_state["user"] = data
+            return True
+        except (OSError, json.JSONDecodeError) as exc:
+            st.warning(f"No se pudo cargar la sesión previa: {exc}")
+    return False
+
 
 def clear_session_token():
+    """Elimina la sesión activa tanto en memoria como en disco."""
     st.session_state.pop("user", None)
+    if os.path.exists(TOKEN_FILE):
+        try:
+            os.remove(TOKEN_FILE)
+        except OSError as exc:
+            st.warning(f"No se pudo eliminar el archivo de sesión: {exc}")
 # ============================
 # CONFIGURACIÓN FIREBASE
 # ============================
@@ -579,6 +616,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
