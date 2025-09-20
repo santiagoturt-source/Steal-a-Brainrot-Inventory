@@ -134,7 +134,7 @@ DEFAULT_THEME = {
     "surface_bg": "#1e293b",
     "text": "#e2e8f0",
     "muted": "#94a3b8",
-    "accent": "#1d707d",
+    "accent": "#1d437d",
     "accent_text": "#0f172a",
 }
 
@@ -759,6 +759,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
