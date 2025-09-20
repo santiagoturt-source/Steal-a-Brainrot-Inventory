@@ -252,7 +252,7 @@ else:
     # INVENTARIO DE BRAINROTS
     # ============================
     with pestañas[1]:
-        if "user" in st.session_state and st.session_state["user"]:
+         if "user" in st.session_state and st.session_state["user"]:
             if perfil_actual and perfil_actual != "(ninguno)":
                 brainrots, cuentas = load_data(uid, perfil_actual)
 
@@ -597,6 +597,8 @@ else:
                                 save_data(uid, perfil_actual, brainrots, cuentas)
                                 st.success(f"Brainrot movido a cuenta '{nueva_cuenta_sel}'.")
                                 st.rerun()
+            else:
+                st.info("Debes seleccionar un perfil para ver tu inventario")
                                 
     with pestañas[2]:
         with st.container(border=True):
@@ -621,6 +623,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
