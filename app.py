@@ -105,7 +105,7 @@ THEMES = {
     },
     "Claro": {
         "page_bg": "#ffffff",
-        "surface_bg": "#ffffff",
+        "surface_bg": "#0f172a",
         "text": "#0f172a",
         "muted": "#475569",
         "accent": "#2563eb",
@@ -768,6 +768,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
