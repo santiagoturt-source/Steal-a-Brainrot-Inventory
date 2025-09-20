@@ -129,41 +129,19 @@ div[data-baseweb="select"] [role="option"]:hover {{
 </style>
 """
 
-THEMES = {
-    "Oscuro": {
-        "page_bg": "#0f172a",
-        "surface_bg": "#1e293b",
-        "text": "#e2e8f0",
-        "muted": "#94a3b8",
-        "accent": "#22d3ee",
-        "accent_text": "#0f172a",
-    },
-    "Claro": {
-        "page_bg": "#ffffff",
-        "surface_bg": "#ffffff",
-        "text": "#0f172a",
-        "muted": "#475569",
-        "accent": "#2563eb",
-        "accent_text": "#0f172a",
-    },
-    "Selva": {
-        "page_bg": "#0b3d2e",
-        "surface_bg": "#0f5132",
-        "text": "#e8f5e9",
-        "muted": "#a7d7c5",
-        "accent": "#34d399",
-        "accent_text": "#064e3b",
-    },
+DEFAULT_THEME = {
+    "page_bg": "#0f172a",
+    "surface_bg": "#1e293b",
+    "text": "#e2e8f0",
+    "muted": "#94a3b8",
+    "accent": "#22d3ee",
+    "accent_text": "#0f172a",
 }
 
-DEFAULT_THEME = "Oscuro"
 
+def apply_theme():
+    st.markdown(THEME_STYLE_TEMPLATE.format(**DEFAULT_THEME), unsafe_allow_html=True)
 
-def apply_theme(theme_name):
-    theme = THEMES.get(theme_name)
-    if not theme:
-        return
-    st.markdown(THEME_STYLE_TEMPLATE.format(**theme), unsafe_allow_html=True)
 
 
 def _write_token_file(data):
@@ -321,10 +299,7 @@ def save_data(uid, perfil, brainrots, cuentas):
 # INTERFAZ STREAMLIT
 # ============================
 
-if "theme" not in st.session_state or st.session_state["theme"] not in THEMES:
-    st.session_state["theme"] = DEFAULT_THEME
-
-apply_theme(st.session_state["theme"])
+apply_theme()
 
 st.title("📒 Inventario de Brainrots")
 
@@ -803,6 +778,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
