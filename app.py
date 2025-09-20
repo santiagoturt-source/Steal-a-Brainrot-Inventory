@@ -491,7 +491,7 @@ else:
                         )
 
                         if st.session_state["cuenta_filtro"] != "Todas":
-                            df = df["Cuenta"] == st.session_state["cuenta_filtro"]
+                            df = df[df["Cuenta"] == st.session_state["cuenta_filtro"]]
                             
                         if st.session_state["orden"] == "Total ↓":
                             df = df.sort_values(by="Total", ascending=False)
@@ -577,6 +577,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
