@@ -406,7 +406,7 @@ else:
     "Blackhole Goat": 400000,
     "Chachechi": 400000,
     "Agaririni la Palini": 425000,
-    "La Cucaracha": 425000,
+    "La Cucaracha": 475000,
     "Los Spyderinis": 550000,
     "Fragola La La La": 450000,
     "Extinct Tralalero": 450000,
@@ -621,6 +621,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
