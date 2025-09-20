@@ -182,7 +182,12 @@ if not load_session_token():
             if "error" in user:
                 st.error(user["error"]["message"])
             else:
-                save_session_token(user["localId"], user["email"])
+                save_session_token(
+                    user.get("localId"),
+                    user.get("email"),
+                    user.get("idToken"),
+                    user.get("refreshToken"),
+                )
                 st.success(f"✅ Sesión iniciada: {user['email']}")
                 st.rerun()
 
@@ -616,6 +621,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
