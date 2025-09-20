@@ -89,6 +89,7 @@ div[data-baseweb="select"] > div:focus-within {{
 div[data-baseweb="select"] > div::before,
 div[data-baseweb="select"] > div::after {{
     box-shadow: none !important;
+    content: none !important;
 }}
 
 .stSelectbox div[role="listbox"], .stMultiSelect div[role="listbox"] {{
@@ -108,7 +109,11 @@ div[data-baseweb="select"] [role="option"]::before {{
 div[data-baseweb="select"] [role="option"][aria-selected="true"],
 div[data-baseweb="select"] [role="option"]:hover {{
     background-color: var(--accent-color) !important;
-    color: var(--accent_text) !important;
+    color: var(--accent-text) !important;
+}}
+.stContainer [data-testid="stVerticalBlockBorderWrapper"] {{
+    border-color: var(--muted-text) !important;
+    background-color: var(--surface-background) !important;
 }}
 .st-emotion-cache-1vbkxwb, .st-emotion-cache-16idsys {{
     color: var(--text-color);
@@ -484,7 +489,7 @@ else:
     "Ti Ti Ti Sahur": 225,
     "Salamino Penguino": 250,
     "Penguino Cocosino": 300,
-    "Burbaloni Lolilol": 300,
+    "Burbaloni Loliloli": 300,
     "Chimpanzini Bananini": 300,
     "Ballerina Cappuccina": 500,
     "Chef Crabracadabra": 600,
@@ -542,11 +547,11 @@ else:
     "Los Crocodilitos": 220000,
     "Los Bombinitos": 220000,
     "Piccione Macchina": 225000,
-    "Brr Es Teh Patipum": 225000,
+    "Brr es Teh Patipum": 225000,
     "Bombardini Tortiini": 225000,
     "Los Orcalitos": 235000,
     "Crabbo Limonetta": 235000,
-    "Cacasito Salatlito": 240000,
+    "Cacasito Satalito": 240000,
     "Los Tungtungtungitos": 250000,
     "Tartaruga Cisterna": 250000,
     "Los Tipi Tacos": 260000,
@@ -561,7 +566,7 @@ else:
     "Dul Dul Dul": 375000,
     "Blackhole Goat": 400000,
     "Chachechi": 400000,
-    "Agaririni la Palini": 425000,
+    "Agarrini la Palini": 425000,
     "La Cucaracha": 475000,
     "Los Spyderinis": 550000,
     "Fragola La La La": 450000,
@@ -798,6 +803,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
