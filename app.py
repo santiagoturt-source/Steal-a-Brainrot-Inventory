@@ -3,11 +3,132 @@ import requests
 import firebase_admin
 from firebase_admin import credentials, firestore
 import pandas as pd
-import uuid 
+import uuid
 import time
 import os, json
 
 TOKEN_FILE = "session_token.json"
+
+
+THEME_STYLE_TEMPLATE = """
+<style>
+:root {{
+    --page-background: {page_bg};
+    --surface-background: {surface_bg};
+    --text-color: {text};
+    --muted-text: {muted};
+    --accent-color: {accent};
+    --accent-text: {accent_text};
+}}
+
+.stApp {{
+    background-color: var(--page-background);
+    color: var(--text-color);
+}}
+
+header, footer {{
+    background: transparent;
+}}
+
+div[data-testid="stSidebar"] {{
+    background-color: var(--surface-background);
+}}
+
+.stMarkdown, .stMarkdown p, p, label, span {{
+    color: var(--text-color) !important;
+}}
+
+.stContainer {{
+    background-color: transparent;
+}}
+
+.stTabs [data-baseweb="tab"] {{
+    color: var(--muted-text);
+}}
+
+.stTabs [data-baseweb="tab"][aria-selected="true"] {{
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}}
+
+.stButton>button, .stDownloadButton>button {{
+    background: var(--accent-color);
+    color: var(--accent-text);
+    border-radius: 6px;
+    border: none;
+    transition: transform 0.1s ease, opacity 0.1s ease;
+}}
+
+.stButton>button:hover, .stDownloadButton>button:hover {{
+    opacity: 0.9;
+    transform: translateY(-1px);
+}}
+
+input, textarea {{
+    background-color: var(--surface-background) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--muted-text) !important;
+}}
+
+div[data-baseweb="select"] > div {{
+    background-color: var(--surface-background);
+    color: var(--text-color);
+}}
+
+.stSelectbox div[role="listbox"], .stMultiSelect div[role="listbox"] {{
+    background-color: var(--surface-background);
+    color: var(--text-color);
+}}
+
+.st-emotion-cache-1vbkxwb, .st-emotion-cache-16idsys {{
+    color: var(--text-color);
+}}
+
+.st-emotion-cache-12w0qpk, .st-emotion-cache-1oy1bma {{
+    color: var(--muted-text);
+}}
+
+.stDivider {{
+    border-color: var(--muted-text) !important;
+}}
+</style>
+"""
+
+THEMES = {
+    "Oscuro": {
+        "page_bg": "#0f172a",
+        "surface_bg": "#1e293b",
+        "text": "#e2e8f0",
+        "muted": "#94a3b8",
+        "accent": "#22d3ee",
+        "accent_text": "#0f172a",
+    },
+    "Claro": {
+        "page_bg": "#f8fafc",
+        "surface_bg": "#ffffff",
+        "text": "#0f172a",
+        "muted": "#475569",
+        "accent": "#2563eb",
+        "accent_text": "#f8fafc",
+    },
+    "Selva": {
+        "page_bg": "#0b3d2e",
+        "surface_bg": "#0f5132",
+        "text": "#e8f5e9",
+        "muted": "#a7d7c5",
+        "accent": "#34d399",
+        "accent_text": "#064e3b",
+    },
+}
+
+DEFAULT_THEME = "Oscuro"
+
+
+def apply_theme(theme_name):
+    theme = THEMES.get(theme_name)
+    if not theme:
+        return
+    st.markdown(THEME_STYLE_TEMPLATE.format(**theme), unsafe_allow_html=True)
 
 
 def _write_token_file(data):
@@ -164,6 +285,11 @@ def save_data(uid, perfil, brainrots, cuentas):
 # ============================
 # INTERFAZ STREAMLIT
 # ============================
+
+if "theme" not in st.session_state or st.session_state["theme"] not in THEMES:
+    st.session_state["theme"] = DEFAULT_THEME
+
+apply_theme(st.session_state["theme"])
 
 st.title("📒 Inventario de Brainrots")
 
@@ -603,9 +729,28 @@ else:
     with pestañas[2]:
         with st.container(border=True):
             st.subheader("⚙️ Opciones")
-            
+
+            st.markdown("### 🎨 Temas")
+            theme_names = list(THEMES.keys())
+            current_theme = st.session_state.get("theme", DEFAULT_THEME)
+            if current_theme not in THEMES:
+                current_theme = DEFAULT_THEME
+                st.session_state["theme"] = DEFAULT_THEME
+
+            selected_theme = st.selectbox(
+                "Elige un tema para la interfaz",
+                theme_names,
+                index=theme_names.index(current_theme),
+                key="theme_select",
+                help="Personaliza los colores generales de la aplicación.",
+            )
+
+            if selected_theme != current_theme:
+                st.session_state["theme"] = selected_theme
+                st.rerun()
+
             if "user" in st.session_state and st.session_state["user"]:
-                st.divider()
+                st.markdown("### 🔐 Sesión")
                 if st.button("🚪 Cerrar sesión", key="logout_button"):
                     clear_session_token()
                     st.session_state.pop("user", None)
@@ -623,6 +768,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
