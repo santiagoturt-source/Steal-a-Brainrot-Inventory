@@ -9,136 +9,6 @@ import os, json
 
 TOKEN_FILE = "session_token.json"
 
-
-THEME_STYLE_TEMPLATE = """
-<style>
-:root {{
-    --page-background: {page_bg};
-    --surface-background: {surface_bg};
-    --text-color: {text};
-    --muted-text: {muted};
-    --accent-color: {accent};
-    --accent-text: {accent_text};
-}}
-
-.stApp {{
-    background-color: var(--page-background);
-    color: var(--text-color);
-}}
-
-header, footer {{
-    background: transparent;
-}}
-
-div[data-testid="stSidebar"] {{
-    background-color: var(--surface-background);
-}}
-
-.stMarkdown, .stMarkdown p, p, label, span {{
-    color: var(--text-color) !important;
-}}
-
-.stContainer {{
-    background-color: transparent;
-}}
-
-.stTabs [data-baseweb="tab"] {{
-    color: var(--muted-text);
-}}
-
-.stTabs [data-baseweb="tab"][aria-selected="true"] {{
-    color: var(--accent-color);
-    border-color: var(--accent-color);
-}}
-
-.stButton>button, .stDownloadButton>button {{
-    background: var(--accent-color);
-    color: var(--accent-text);
-    border-radius: 6px;
-    border: none;
-    transition: transform 0.1s ease, opacity 0.1s ease;
-}}
-
-.stButton>button:hover, .stDownloadButton>button:hover {{
-    opacity: 0.9;
-    transform: translateY(-1px);
-}}
-
-input, textarea {{
-    background-color: var(--surface-background) !important;
-    color: var(--text-color) !important;
-    border: 1px solid var(--muted-text) !important;
-}}
-
-div[data-baseweb="select"] {{
-    color: var(--text-color);
-}}
-
-div[data-baseweb="select"] > div {{
-    background-color: var(--surface-background) !important;
-    color: var(--text-color) !important;
-    border: 1px solid var(--muted-text) !important;
-    box-shadow: none !important;
-}}
-
-div[data-baseweb="select"] > div:focus-within {{
-    border-color: var(--accent-color) !important;
-    box-shadow: 0 0 0 1px var(--accent-color) !important;
-}}
-
-div[data-baseweb="select"] > div::before,
-div[data-baseweb="select"] > div::after {{
-    box-shadow: none !important;
-    content: none !important;
-}}
-
-.stSelectbox div[role="listbox"], .stMultiSelect div[role="listbox"] {{
-    background-color: var(--surface-background);
-    color: var(--text-color);
-}}
-
-div[data-baseweb="select"] [role="option"] {{
-    background-color: var(--surface-background);
-    color: var(--text-color);
-}}
-
-div[data-baseweb="select"] [role="option"]::before {{
-    display: none !important;
-}}
-
-div[data-baseweb="select"] [role="option"][aria-selected="true"],
-div[data-baseweb="select"] [role="option"]:hover {{
-    background-color: var(--accent-color) !important;
-    color: var(--accent-text) !important;
-}}
-.stContainer [data-testid="stVerticalBlockBorderWrapper"] {{
-    border-color: var(--muted-text) !important;
-    background-color: var(--surface-background) !important;
-}}
-.st-emotion-cache-1vbkxwb, .st-emotion-cache-16idsys {{
-    color: var(--text-color);
-}}
-
-.st-emotion-cache-12w0qpk, .st-emotion-cache-1oy1bma {{
-    color: var(--muted-text);
-}}
-
-.stDivider {{
-    border-color: var(--muted-text) !important;
-}}
-</style>
-"""
-
-DEFAULT_THEME = {
-    "page_bg": "#0f172a",
-    "surface_bg": "#1e293b",
-    "text": "#e2e8f0",
-    "muted": "#94a3b8",
-    "accent": "#1d437d",
-    "accent_text": "#0f172a",
-}
-
-
 def apply_theme():
     st.markdown(THEME_STYLE_TEMPLATE.format(**DEFAULT_THEME), unsafe_allow_html=True)
 
@@ -759,6 +629,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
