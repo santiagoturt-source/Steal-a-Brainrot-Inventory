@@ -70,9 +70,25 @@ input, textarea {{
     border: 1px solid var(--muted-text) !important;
 }}
 
-div[data-baseweb="select"] > div {{
-    background-color: var(--surface-background);
+div[data-baseweb="select"] {{
     color: var(--text-color);
+}}
+
+div[data-baseweb="select"] > div {{
+    background-color: var(--surface-background) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--muted-text) !important;
+    box-shadow: none !important;
+}}
+
+div[data-baseweb="select"] > div:focus-within {{
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 1px var(--accent-color) !important;
+}}
+
+div[data-baseweb="select"] > div::before,
+div[data-baseweb="select"] > div::after {{
+    box-shadow: none !important;
 }}
 
 .stSelectbox div[role="listbox"], .stMultiSelect div[role="listbox"] {{
@@ -80,6 +96,20 @@ div[data-baseweb="select"] > div {{
     color: var(--text-color);
 }}
 
+div[data-baseweb="select"] [role="option"] {{
+    background-color: var(--surface-background);
+    color: var(--text-color);
+}}
+
+div[data-baseweb="select"] [role="option"]::before {{
+    display: none !important;
+}}
+
+div[data-baseweb="select"] [role="option"][aria-selected="true"],
+div[data-baseweb="select"] [role="option"]:hover {{
+    background-color: var(--accent-color) !important;
+    color: var(--accent_text) !important;
+}}
 .st-emotion-cache-1vbkxwb, .st-emotion-cache-16idsys {{
     color: var(--text-color);
 }}
@@ -768,6 +798,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
