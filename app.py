@@ -109,7 +109,7 @@ THEMES = {
         "text": "#0f172a",
         "muted": "#475569",
         "accent": "#2563eb",
-        "accent_text": "#f8fafc",
+        "accent_text": "#0f172a",
     },
     "Selva": {
         "page_bg": "#0b3d2e",
@@ -768,6 +768,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
