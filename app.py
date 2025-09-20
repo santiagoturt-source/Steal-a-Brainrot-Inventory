@@ -165,7 +165,7 @@ def save_data(uid, perfil, brainrots, cuentas):
 # INTERFAZ STREAMLIT
 # ============================
 
-st.title("📒 Inventario de Brainrots")
+st.title("🤌🏿 Inventario de Brainrots")
 
 # ============================
 # 🖥️ INTERFAZ LOGIN / SIGNUP
@@ -621,6 +621,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
