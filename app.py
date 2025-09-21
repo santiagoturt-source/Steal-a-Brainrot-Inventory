@@ -655,6 +655,8 @@ else:
                         "Strawberry Elephant": "Secret",
                     }
 
+                }
+
                     BRAINROTS = {
                         nombre: {
                             "income": base,
@@ -858,6 +860,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
