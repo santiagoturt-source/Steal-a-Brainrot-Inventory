@@ -1115,9 +1115,9 @@ else:
                             if st.button("🗑️ Borrar Brainrot") and to_delete != "(ninguno)":
                                   brainrot_id = ids_map[to_delete]
                                 brainrots = [b for b in brainrots if b["id"] != brainrot_id]
-                                save_data(uid, perfil_actual, brainrots, cuentas)
-                                st.success("Brainrot borrado.")
-                                st.rerun()
+                            save_data(uid, perfil_actual, brainrots, cuentas)
+                            st.success("Brainrot borrado.")
+                            st.rerun()
 
                             # Mover
                             mover_option = st.selectbox(
@@ -1160,6 +1160,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
