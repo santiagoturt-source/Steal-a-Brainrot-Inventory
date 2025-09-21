@@ -761,29 +761,31 @@ else:
 }
 
                     MUTACIONES = {
-    "🌧️ Rain": 1.5,
-    "❄️ Snow": 2,
+    "🌧️ Lluvia": 1.5,
+    "❄️ Nieve": 2,
     "🌮 Taco": 3,
-    "🛸 UFO": 3,
-    "✨ Starfall": 3.5,
-    "🦈 Shark Fin": 4,
-    "🪐 Galactic (Saturnita)": 4,
-    "🍬 Bubblegum": 4,
+    "🛸 Alien": 3,
+    "✨ Lluvia de Estrellas": 3.5,
+    "🦈 Aleta": 4,
+    "🪐 Galáctico": 4,
+    "🍬 Chicle": 4,
     "💣 Bombardiro": 4,
     "🔟 10B": 4,
-    "☠️ Extinct": 4,
-    "🎩 Matteo Hat": 4.5,
-    "🕷️ Spider (Spyderini)": 4.5,
-    "🥁 Tung Tung Attack": 5,
-    "🦀 Crab Rave": 5,
+    "☠️ Extinto": 4,
+    "🎩 Sombrero (Matteo)": 4.5,
+    "🕷️ Araña (Spyderini)": 4.5,
+    "🥁 Ataque Tung Tung": 5,
+    "🦀 Cangrejo": 5,
     "🌐 Glitch": 5,
-    "🎶 Concert / Disco": 5,
-    "🇧🇷 Brazil": 5,
-    "🔥 Fire (Solar Flare)": 6,
+    "🎶 Concierto": 5,
+    "🌯🤠 Sombrero Mexico": 5,
+    "🇧🇷 Brasil": 5,
+    "🚲🍭 Chicletera": 6,
+    "🔥 Fuego": 6,
     "🐱 Nyan Cat": 6,
-    "🎆 4th of July Fireworks": 6,
-    "⚡ Lightning": 6,
-    "🍓 Strawberry": 8,
+    "🎆 4 de Julio": 6,
+    "⚡🐲 Dragón Rayo": 6,
+    "🍓 Fresa": 8,
 }
 
                     personaje = st.selectbox(
@@ -978,6 +980,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
