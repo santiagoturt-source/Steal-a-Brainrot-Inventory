@@ -23,7 +23,7 @@ RARITY_BADGE_STYLE = """
     min-width: 8ch;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
-.rarity-badge.rarity-common {
+.rarity-badge.rarity-común {
     background-color: #2ecc71;
     color: #0e331c;
 }
@@ -978,6 +978,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
