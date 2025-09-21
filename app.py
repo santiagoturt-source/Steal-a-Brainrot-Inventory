@@ -302,7 +302,7 @@ else:
                     st.markdown("### ➕ Agregar Brainrot")
 
                     
-                        BRAINROTS_BASES == {
+                    BRAINROTS_BASES = {
                         "Noobini Pizzanini": 1,
     "Lirilì Larilà": 3,
     "Tim Cheese": 5,
@@ -713,7 +713,11 @@ else:
 
                     personaje = st.selectbox(
                         "Selecciona un Brainrot",
-                        ["(ninguno)"] + [f"{k} — {format_num(v)}" for k, v in BRAINROTS.items()]
+                        ["(ninguno)"]
+                        + [
+                            f"{nombre} — {format_num(data['income'])}"
+                            for nombre, data in BRAINROTS.items()
+                        ]
                     )
 
                     color = st.selectbox("Color", list(COLORES.keys()))
@@ -722,9 +726,11 @@ else:
 
                     total_preview = None
                     nombre_seleccionado = None
+                    datos_brainrot = None
                     if personaje != "(ninguno)":
                         nombre_seleccionado = personaje.split(" — ")[0]
-                        base = BRAINROTS[nombre_seleccionado]
+                        datos_brainrot = BRAINROTS[nombre_seleccionado]
+                        base = datos_brainrot["income"]
                         total_preview = calcular_total(
                             base,
                             COLORES[color],
@@ -738,6 +744,7 @@ else:
                         brainrots.append({
                             "id": str(uuid.uuid4()),  # ID invisible
                             "Brainrot": nombre_seleccionado,
+                            "Calidad": datos_brainrot["quality"],
                             "Color": color,
                             "Mutaciones": mutaciones,
                             "Cuenta": cuenta_sel,
@@ -745,7 +752,7 @@ else:
                         })
                         save_data(uid, perfil_actual, brainrots, cuentas)
                         st.success(
-                            f"Brainrot '{nombre_seleccionado}' agregado con total {format_num(total_preview)}."
+                            f"Brainrot '{nombre_seleccionado}' [{datos_brainrot['quality']}] agregado con total {format_num(total_preview)}."
                         )
                         st.rerun()
 
@@ -772,7 +779,7 @@ else:
                         )
 
                         if st.session_state["cuenta_filtro"] != "Todas":
-                            df = df["Cuenta"] == st.session_state["cuenta_filtro"]
+                            df = df[df["Cuenta"] == st.session_state["cuenta_filtro"]]
                             
                         if st.session_state["orden"] == "Total ↓":
                             df = df.sort_values(by="Total", ascending=False)
@@ -787,8 +794,39 @@ else:
                             
                         df["Total"] = df["Total"].apply(format_num)
                         df = df.drop(columns=["id"], errors="ignore")
-                        columnas = ["Brainrot", "Cuenta", "Total", "Color", "Mutaciones"]
-                        df = df[columnas]
+                        if "Calidad" not in df.columns:
+                            df["Calidad"] = df["Brainrot"].map(
+                                lambda nombre: BRAINROTS.get(nombre, {}).get("quality", "Common")
+                            )
+
+                        df["Mutaciones"] = df["Mutaciones"].apply(
+                            lambda mut: ", ".join(mut) if isinstance(mut, list) else mut
+                        )
+
+                        columnas = ["Brainrot", "Calidad", "Cuenta", "Total", "Color", "Mutaciones"]
+                        df = df[[col for col in columnas if col in df.columns]]
+
+                        def estilo_calidad(valor):
+                            if not valor:
+                                return ""
+                            color = RARITY_COLORS.get(valor)
+                            if not color:
+                                return ""
+                            if color.startswith("linear-gradient"):
+                                return (
+                                    f"background: {color}; color: #000; font-weight: 600;"
+                                )
+                            texto = "#ffffff"
+                            if valor in {"Legendary"}:
+                                texto = "#000000"
+                            if valor == "Secret":
+                                texto = "#ffffff"
+                            return f"background-color: {color}; color: {texto}; font-weight: 600;"
+
+                        st.dataframe(
+                            df.style.hide(axis="index").applymap(estilo_calidad, subset=["Calidad"]),
+                            use_container_width=True
+                        )
                         
                         st.dataframe(
                             df.style.hide(axis="index"),
@@ -804,7 +842,13 @@ else:
                             st.markdown("### 🗑️ 🔄 Borrar / Mover Brainrots")
 
                             def brainrot_label(b):
-                                parts = [f"{b['Brainrot']}", f"Cuenta: {b['Cuenta']}", f"Total: {format_num(b['Total'])}"]
+                                parts = [
+                                    f"{b['Brainrot']}",
+                                    f"Cuenta: {b['Cuenta']}",
+                                    f"Total: {format_num(b['Total'])}"
+                                ]
+                                if b.get("Calidad"):
+                                    parts.append(f"Calidad: {b['Calidad']}")
                                 if b.get("Color") and b["Color"] != "-":
                                     parts.append(f"Color: {b['Color']}")
                                 if b.get("Mutaciones"):
@@ -859,6 +903,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
