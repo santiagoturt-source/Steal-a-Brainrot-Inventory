@@ -44,7 +44,7 @@ RARITY_BADGE_STYLE = """
     color: #fff4f2;
 }
 .rarity-badge.rarity-brainrot-god {
-    background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    background-image: linear-gradient(90deg, red, blue, violet);
     color: #ffffff;
     text-shadow: 0 0 4px rgba(255, 255, 255, 0.35);
 }
@@ -978,6 +978,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
