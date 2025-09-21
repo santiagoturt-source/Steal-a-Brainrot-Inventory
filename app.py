@@ -82,9 +82,65 @@ RARITY_BADGE_STYLE = """
 """
 
 
+COLOR_BADGE_STYLE = """
+<style>
+.color-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.15rem 0.8rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    min-width: 8ch;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.color-badge.color-ninguno {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #f5f5f5;
+}
+.color-badge.color-dorado {
+    background: linear-gradient(135deg, #f1c40f, #f7dc6f);
+    color: #3d2f02;
+}
+.color-badge.color-diamante {
+    background: linear-gradient(135deg, #74d4ff, #a5f1e9);
+    color: #06333d;
+}
+.color-badge.color-luna-roja {
+    background: linear-gradient(135deg, #8e1c24, #e74c3c);
+    color: #fff5f4;
+}
+.color-badge.color-candy {
+    background: linear-gradient(135deg, #ff7eb9, #ff65a3);
+    color: #3e1025;
+}
+.color-badge.color-lava {
+    background: linear-gradient(135deg, #f05053, #f26d3d);
+    color: #3d0c02;
+}
+.color-badge.color-galaxy {
+    background: radial-gradient(circle at top left, #6d5dfc, #320d6d);
+    color: #f2e9ff;
+}
+.color-badge.color-rainbow {
+    background-image: linear-gradient(90deg, #ff0000, #ffa500, #ffff00, #00ff00, #0000ff, #4b0082, #ee82ee);
+    color: #ffffff;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
+}
+</style>
+"""
+
+
 def ensure_rarity_styles():
     """Injecta los estilos de las insignias de rareza para la tabla HTML."""
     st.markdown(RARITY_BADGE_STYLE, unsafe_allow_html=True)
+
+
+def ensure_color_styles():
+    """Injecta los estilos de las insignias de color para la tabla HTML."""
+    st.markdown(COLOR_BADGE_STYLE, unsafe_allow_html=True)
 
 
 def rarity_badge_html(rarity: str) -> str:
@@ -93,6 +149,26 @@ def rarity_badge_html(rarity: str) -> str:
         return ""
     slug = rarity.lower().replace(" ", "-")
     return f"<span class='rarity-badge rarity-{slug}'>{rarity}</span>"
+
+
+COLOR_BADGE_CLASS_MAP = {
+    "-": "color-ninguno",
+    "🟡 Dorado": "color-dorado",
+    "💎 Diamante": "color-diamante",
+    "🩸 Luna Roja": "color-luna-roja",
+    "🍬 Candy": "color-candy",
+    "🌋 Lava": "color-lava",
+    "🌌 Galaxy": "color-galaxy",
+    "🌈 Rainbow": "color-rainbow",
+}
+
+
+def color_badge_html(color: str) -> str:
+    """Devuelve una insignia HTML para el color indicado."""
+    if not color:
+        color = "-"
+    css_class = COLOR_BADGE_CLASS_MAP.get(color, "color-ninguno")
+    return f"<span class='color-badge {css_class}'>{color}</span>"
 
 def apply_theme():
     st.markdown(THEME_STYLE_TEMPLATE.format(**DEFAULT_THEME), unsafe_allow_html=True)
@@ -889,6 +965,7 @@ else:
                             st.info("No hay brainrots para mostrar con los filtros seleccionados.")
                         else:
                             ensure_rarity_styles()
+                            ensure_color_styles()
 
                             df_display = df.copy()
                             df_display["Calidad"] = df_display["Calidad"].apply(rarity_badge_html)
@@ -899,9 +976,7 @@ else:
                                 lambda valor: valor if valor else "-"
                             )
                             if "Color" in df_display:
-                                df_display["Color"] = df_display["Color"].apply(
-                                    lambda valor: valor if valor else "-"
-                                )
+                                df_display["Color"] = df_display["Color"].apply(color_badge_html)
 
                         st.markdown(
                                 df_display.to_html(
@@ -982,6 +1057,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
