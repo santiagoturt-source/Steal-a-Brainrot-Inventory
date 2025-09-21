@@ -7,6 +7,7 @@ import uuid
 import time
 import os, json
 import unicodedata
+from typing import Iterable
 
 TOKEN_FILE = "session_token.json"
 
@@ -157,10 +158,10 @@ class SearchableOption:
 
     __slots__ = ("label", "payload", "_search_text")
 
-    def __init__(self, label: str, search_terms: tuple[str, ...], payload=None):
+    def __init__(self, label: str, search_terms: Iterable[str], payload=None):
         self.label = label
         self.payload = payload if payload is not None else label
-        normalized_terms: list[str] = []
+        normalized_terms = []
         for term in search_terms:
             normalized = normalize_text(term)
             if normalized:
@@ -1153,6 +1154,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
