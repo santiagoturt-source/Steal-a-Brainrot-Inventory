@@ -1057,23 +1057,6 @@ else:
                         with st.container(border=True):
                             st.markdown("### 🗑️ 🔄 Borrar / Mover Brainrots")
 
-                            busqueda_inventario = st.text_input(
-                                "🔍 Buscar en inventario",
-                                key=f"busqueda_inventario_{perfil_actual}"
-                            ).strip()
-
-                            brainrots_para_gestion = brainrots
-                            if busqueda_inventario:
-                                termino_inventario = normalize_text(busqueda_inventario)
-                                brainrots_para_gestion = [
-                                    b
-                                    for b in brainrots
-                                    if termino_inventario in normalize_text(b.get("Brainrot", ""))
-                                ]
-
-                            if busqueda_inventario and not brainrots_para_gestion:
-                                st.info("No hay brainrots en el inventario que coincidan con la búsqueda.")
-
                             def brainrot_label(b):
                                 parts = [
                                     f"{b['Brainrot']}",
@@ -1089,7 +1072,7 @@ else:
                                 return " | ".join(parts), b["id"]
 
                             brainrot_entries = []
-                            for brainrot in brainrots_para_gestion:
+                            for brainrot in brainrots:
                                 label, brainrot_id = brainrot_label(brainrot)
                                 option_value = make_searchable_option(
                                     label,
@@ -1160,6 +1143,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
