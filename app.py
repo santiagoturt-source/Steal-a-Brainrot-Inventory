@@ -672,6 +672,8 @@ else:
 
                     if faltantes_calidad:
                         save_data(uid, perfil_actual, brainrots, cuentas)
+                        }
+                        
 
                     COLORES = {
     "-": 0,
@@ -858,6 +860,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
