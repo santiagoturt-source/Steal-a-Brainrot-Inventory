@@ -733,7 +733,7 @@ else:
                     BRAINROTS = {
                         nombre: {
                             "income": base,
-                            "quality": BRAINROT_RARITIES.get(nombre, "Common"),
+                            "quality": BRAINROT_RARITIES.get(nombre, "Común"),
                         }
                         for nombre, base in BRAINROT_BASES.items()
                     }
@@ -742,7 +742,7 @@ else:
                     for brainrot in brainrots:
                         if "Calidad" not in brainrot:
                             info = BRAINROTS.get(brainrot.get("Brainrot"))
-                            brainrot["Calidad"] = info["quality"] if info else "Common"
+                            brainrot["Calidad"] = info["quality"] if info else "Común"
                             faltantes_calidad = True
 
                     if faltantes_calidad:
@@ -978,6 +978,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
