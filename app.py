@@ -301,7 +301,7 @@ else:
                 with st.container(border=True):
                     st.markdown("### ➕ Agregar Brainrot")
 
-                    BRAINROTS = { 
+                    
                         BRAINROTS_BASES == {
                         "Noobini Pizzanini": 1,
     "Lirilì Larilà": 3,
@@ -672,7 +672,6 @@ else:
 
                     if faltantes_calidad:
                         save_data(uid, perfil_actual, brainrots, cuentas)
-                        }
                         
 
                     COLORES = {
@@ -860,6 +859,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
