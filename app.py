@@ -53,7 +53,7 @@ RARITY_BADGE_STYLE = """
     color: #f5f5f5;
 }
 .rarity-badge.rarity-og {
-    background-image: linear-gradient(135deg, #000000 0%, #121212 60%, #ffd400 60%, #ffeb7f 100%);
+    background-image: linear-gradient(135deg, #000000, #121212, #ffd400, #ffeb7f);
     color: #ffffff;
     text-shadow: 0 0 4px rgba(0, 0, 0, 0.45);
     box-shadow: inset 0 0 0 1px rgba(255, 217, 0, 0.35);
@@ -988,6 +988,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
