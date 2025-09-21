@@ -904,12 +904,13 @@ else:
                                 df_display["Color"] = df_display["Color"].apply(
                                     lambda valor: valor if valor else "-"
                                 )
+                                
                             texto = "#ffffff"
                             if valor in {"Legendary"}:
                                 texto = "#000000"
                             if valor == "Secret":
                                 texto = "#ffffff"
-                            return f"background-color: {color}; color: {texto}; font-weight: 600;"
+                            return f"background-color: {color}; color: {texto}; font-weight: 600;":
 
                         st.markdown(
                                 df_display.to_html(
@@ -990,6 +991,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
