@@ -80,17 +80,17 @@ def format_num(num):
     if num >= 1_000_000_000:
         # Billones → TRUNCADO
         val = (num / Decimal("1000000000")).quantize(Decimal("0.1"), rounding=ROUND_DOWN)
-        return f"${val}B"
-    elif num >= 1_000_000:
+        return f"${val}B/s"
+    elif num >= 1_000_000:␊
         # Millones → TRUNCADO
         val = (num / Decimal("1000000")).quantize(Decimal("0.1"), rounding=ROUND_DOWN)
-        return f"${val}M"
+        return f"${val}M/s"
     elif num >= 1_000:
         # Miles → REDONDEADO
         val = (num / Decimal("1000")).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)
-        return f"${val}K"
+        return f"${val}K/s"
     else:
-        return f"${num}"
+        return f"${num}/s"
 
 def calcular_total(base, color_mult, mutaciones_mults):
     """Cálculo con la fórmula exacta de Excel"""
@@ -657,6 +657,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
