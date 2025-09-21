@@ -81,7 +81,7 @@ def format_num(num):
         # Billones → TRUNCADO
         val = (num / Decimal("1000000000")).quantize(Decimal("0.1"), rounding=ROUND_DOWN)
         return f"${val}B/s"
-    elif num >= 1_000_000:␊
+    elif num >= 1_000_000:
         # Millones → TRUNCADO
         val = (num / Decimal("1000000")).quantize(Decimal("0.1"), rounding=ROUND_DOWN)
         return f"${val}M/s"
@@ -657,6 +657,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
