@@ -654,12 +654,6 @@ else:
                         "Dragon Cannelloni": "Secret",
                         "Strawberry Elephant": "Secret",
                     }
-                        
-                        }
-                        
-             
-
-                
 
                     BRAINROTS = {
                         nombre: {
@@ -864,6 +858,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
