@@ -9,6 +9,87 @@ import os, json
 
 TOKEN_FILE = "session_token.json"
 
+RARITY_BADGE_STYLE = """
+<style>
+.rarity-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.15rem 0.8rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    min-width: 8ch;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+.rarity-badge.rarity-common {
+    background-color: #2ecc71;
+    color: #0e331c;
+}
+.rarity-badge.rarity-rare {
+    background-color: #3498db;
+    color: #0e2332;
+}
+.rarity-badge.rarity-epic {
+    background-color: #9b59b6;
+    color: #f5f0f8;
+}
+.rarity-badge.rarity-legendary {
+    background-color: #f1c40f;
+    color: #3d3203;
+}
+.rarity-badge.rarity-mythic {
+    background-color: #e74c3c;
+    color: #fff4f2;
+}
+.rarity-badge.rarity-brainrot-god {
+    background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    color: #0d0d0d;
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.35);
+}
+.rarity-badge.rarity-secret {
+    background-color: #000000;
+    color: #f5f5f5;
+}
+.brainrot-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.75rem;
+}
+.brainrot-table th {
+    text-align: left;
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.brainrot-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.9rem;
+}
+.brainrot-table tr:last-child td {
+    border-bottom: none;
+}
+</style>
+"""
+
+
+def ensure_rarity_styles():
+    """Injecta los estilos de las insignias de rareza una sola vez por sesión."""
+    if not st.session_state.get("_rarity_styles_injected"):
+        st.markdown(RARITY_BADGE_STYLE, unsafe_allow_html=True)
+        st.session_state["_rarity_styles_injected"] = True
+
+
+def rarity_badge_html(rarity: str) -> str:
+    """Devuelve una insignia HTML para la rareza indicada."""
+    if not rarity:
+        return ""
+    slug = rarity.lower().replace(" ", "-")
+    return f"<span class='rarity-badge rarity-{slug}'>{rarity}</span>"
+
 def apply_theme():
     st.markdown(THEME_STYLE_TEMPLATE.format(**DEFAULT_THEME), unsafe_allow_html=True)
 
@@ -806,15 +887,22 @@ else:
                         columnas = ["Brainrot", "Calidad", "Cuenta", "Total", "Color", "Mutaciones"]
                         df = df[[col for col in columnas if col in df.columns]]
 
-                        def estilo_calidad(valor):
-                            if not valor:
-                                return ""
-                            color = RARITY_COLORS.get(valor)
-                            if not color:
-                                return ""
-                            if color.startswith("linear-gradient"):
-                                return (
-                                    f"background: {color}; color: #000; font-weight: 600;"
+                        if df.empty:
+                            st.info("No hay brainrots para mostrar con los filtros seleccionados.")
+                        else:
+                            ensure_rarity_styles()
+
+                            df_display = df.copy()
+                            df_display["Calidad"] = df_display["Calidad"].apply(rarity_badge_html)
+                            df_display["Mutaciones"] = df_display["Mutaciones"].apply(
+                                lambda valor: valor if valor else "-"
+                            )
+                            df_display["Cuenta"] = df_display["Cuenta"].apply(
+                                lambda valor: valor if valor else "-"
+                            )
+                            if "Color" in df_display:
+                                df_display["Color"] = df_display["Color"].apply(
+                                    lambda valor: valor if valor else "-"
                                 )
                             texto = "#ffffff"
                             if valor in {"Legendary"}:
@@ -823,15 +911,14 @@ else:
                                 texto = "#ffffff"
                             return f"background-color: {color}; color: {texto}; font-weight: 600;"
 
-                        st.dataframe(
-                            df.style.hide(axis="index").applymap(estilo_calidad, subset=["Calidad"]),
-                            use_container_width=True
-                        )
-                        
-                        st.dataframe(
-                            df.style.hide(axis="index"),
-                            use_container_width=True
-                        )
+                        st.markdown(
+                                df_display.to_html(
+                                    escape=False,
+                                    index=False,
+                                    classes="brainrot-table"
+                                ),
+                                unsafe_allow_html=True,
+                            )
 
 
 
@@ -903,6 +990,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
