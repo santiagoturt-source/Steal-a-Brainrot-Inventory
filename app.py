@@ -711,6 +711,7 @@ else:
                         "Los Chicleteiras": "Secreto",
                         "67": "Secreto",
                         "La Grande Combinasion": "Secreto",
+                        "Mariachi Corazoni": "Secreto",
                         "Los Combinasionas": "Secreto",
                         "Nuclearo Dinossauro": "Secreto",
                         "Tacorita Bicicleta": "Secreto",
@@ -981,6 +982,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
