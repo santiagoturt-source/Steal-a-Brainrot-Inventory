@@ -302,7 +302,7 @@ else:
                     st.markdown("### ➕ Agregar Brainrot")
 
                     BRAINROTS = { 
-                        BRAINROTS_BASES = {
+                        BRAINROTS_BASES == {
                         "Noobini Pizzanini": 1,
     "Lirilì Larilà": 3,
     "Tim Cheese": 5,
@@ -864,6 +864,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
