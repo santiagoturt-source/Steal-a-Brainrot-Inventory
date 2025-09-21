@@ -301,8 +301,9 @@ else:
                 with st.container(border=True):
                     st.markdown("### ➕ Agregar Brainrot")
 
-                    BRAINROTS = {
-    "Noobini Pizzanini": 1,
+                    BRAINROTS = { 
+                        BRAINROTS_BASES = {
+                        "Noobini Pizzanini": 1,
     "Lirilì Larilà": 3,
     "Tim Cheese": 5,
     "Fluriflura": 7,
@@ -471,6 +472,7 @@ else:
     "Dragon Cannelloni": 100000000,
     "Strawberry Elephant": 300000000,
 }
+    
     
                     RARITY_COLORS = {
                         "Common": "#2ecc71",
@@ -856,6 +858,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
