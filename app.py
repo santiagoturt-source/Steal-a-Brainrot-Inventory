@@ -27,19 +27,19 @@ RARITY_BADGE_STYLE = """
     background-color: #2ecc71;
     color: #0e331c;
 }
-.rarity-badge.rarity-rare {
+.rarity-badge.rarity-raro {
     background-color: #3498db;
     color: #0e2332;
 }
-.rarity-badge.rarity-epic {
+.rarity-badge.rarity-épico {
     background-color: #9b59b6;
     color: #f5f0f8;
 }
-.rarity-badge.rarity-legendary {
+.rarity-badge.rarity-legendario {
     background-color: #f1c40f;
     color: #3d3203;
 }
-.rarity-badge.rarity-mythic {
+.rarity-badge.rarity-mítico {
     background-color: #e74c3c;
     color: #fff4f2;
 }
@@ -48,7 +48,7 @@ RARITY_BADGE_STYLE = """
     color: #0d0d0d;
     text-shadow: 0 0 4px rgba(255, 255, 255, 0.35);
 }
-.rarity-badge.rarity-secret {
+.rarity-badge.rarity-secreto {
     background-color: #000000;
     color: #f5f5f5;
 }
@@ -565,80 +565,80 @@ else:
                         "Tim Cheese": "Común",
                         "Fluriflura": "Común",
                         "Talpa Di Fero": "Común",
-                        "Svinina Bombardino": "Common",
-                        "Raccooni Jandelini": "Common",
-                        "Pipi Kiwi": "Common",
-                        "Pipi Corni": "Common",
-                        "Trippi Troppi": "Common",
-                        "Gangster Footera": "Common",
-                        "Bandito Bobritto": "Common",
-                        "Boneca Ambalabu": "Common",
-                        "Cacto Hipopotamo": "Common",
-                        "Ta Ta Ta Ta Sahur": "Common",
-                        "Tric-Trac-Baraboom": "Common",
-                        "Pipi Avocado": "Common",
-                        "Cappuccino Assassino": "Common",
-                        "Bandito Axolito": "Common",
-                        "Brr Brr Patapim": "Common",
-                        "Avocadini Antilopini": "Common",
-                        "Bambini Crostini": "Common",
-                        "Trulimero Trulicina": "Common",
-                        "Malame Amarele": "Common",
-                        "Bananita Dolphinita": "Common",
-                        "Perochello Lemonchello": "Common",
-                        "Brri Brri Bicus Dicus Bombicus": "Common",
-                        "Burbaloni Loliloli": "Common",
-                        "Ti Ti Ti Sahur": "Common",
-                        "Avocadini Guffo": "Common",
-                        "Mangolini Parrocini": "Common",
-                        "Salamino Penguino": "Common",
-                        "Penguino Cocosino": "Common",
-                        "Chimpanzini Bananini": "Common",
-                        "Tirilikalika Tirilikalako": "Common",
-                        "Ballerina Cappuccina": "Common",
-                        "Chef Crabracadabra": "Common",
-                        "Lionel Cactuseli": "Common",
-                        "Glorbo Fruttodrillo": "Common",
-                        "Quivioli Ameleonni": "Common",
-                        "Blueberrinni Octopusini": "Common",
-                        "Caramello Filtrello": "Common",
-                        "Pipi Potato": "Common",
-                        "Strawberelli Flamingelli": "Common",
-                        "Cocosini Mama": "Common",
-                        "Pandaccini Bananini": "Common",
-                        "Pi Pi Watermelon": "Common",
-                        "Signore Carapace": "Common",
-                        "Sigma Boy": "Common",
-                        "Frigo Camelo": "Common",
-                        "Sigma Girl": "Common",
-                        "Orangutini Ananassini": "Common",
-                        "Rhino Toasterino": "Common",
-                        "Bombardiro Crocodilo": "Common",
-                        "Bruto Gialutto": "Common",
-                        "Spioniro Golubiro": "Common",
-                        "Bombombini Gusini": "Common",
-                        "Zibra Zubra Zibralini": "Common",
-                        "Tigrilini Watermelini": "Common",
-                        "Avocadorilla": "Common",
-                        "Cavallo Virtuoso": "Common",
-                        "Gorillo Subwoofero": "Common",
-                        "Gorillo Watermelondrillo": "Common",
-                        "Tob Tobi Tobi": "Common",
-                        "Lerulerulerule": "Common",
-                        "Ganganzelli Trulala": "Common",
-                        "Te Te Te Sahur": "Common",
-                        "Rhino Helicopterino": "Rare",
-                        "Tracoducotulu Delapeladustuz": "Rare",
-                        "Los Noobinis": "Rare",
-                        "Carloo": "Rare",
-                        "Carrotini Brainini": "Rare",
-                        "Elefanto Frigo": "Rare",
-                        "Cocofanto Elefanto": "Rare",
-                        "Antonio": "Rare",
-                        "Girafa Celestre": "Rare",
-                        "Gattatino Nyanino": "Rare",
-                        "Chihuanini Taconini": "Rare",
-                        "Tralalero Tralala": "Epic",
+                        "Svinina Bombardino": "Común",
+                        "Raccooni Jandelini": "Común",
+                        "Pipi Kiwi": "Común",
+                        "Pipi Corni": "Común",
+                        "Trippi Troppi": "Raro",
+                        "Gangster Footera": "Raro",
+                        "Bandito Bobritto": "Raro",
+                        "Boneca Ambalabu": "Raro",
+                        "Cacto Hipopotamo": "Raro",
+                        "Ta Ta Ta Ta Sahur": "Raro",
+                        "Tric-Trac-Baraboom": "Raro",
+                        "Pipi Avocado": "Raro",
+                        "Cappuccino Assassino": "Épico",
+                        "Bandito Axolito": "Épico",
+                        "Brr Brr Patapim": "Épico",
+                        "Avocadini Antilopini": "Épico",
+                        "Bambini Crostini": "Épico",
+                        "Trulimero Trulicina": "Épico",
+                        "Malame Amarele": "Épico",
+                        "Bananita Dolphinita": "Épico",
+                        "Perochello Lemonchello": "Épico",
+                        "Brri Brri Bicus Dicus Bombicus": "Épico",
+                        "Burbaloni Loliloli": "Legendario",
+                        "Ti Ti Ti Sahur": "Épico",
+                        "Avocadini Guffo": "Épico",
+                        "Mangolini Parrocini": "Épico",
+                        "Salamino Penguino": "Épico",
+                        "Penguino Cocosino": "Épico",
+                        "Chimpanzini Bananini": "Legendario",
+                        "Tirilikalika Tirilikalako": "Legendario",
+                        "Ballerina Cappuccina": "Legendario",
+                        "Chef Crabracadabra": "Legendario",
+                        "Lionel Cactuseli": "Legendario",
+                        "Glorbo Fruttodrillo": "Legendario",
+                        "Quivioli Ameleonni": "Legendario",
+                        "Blueberrinni Octopusini": "Legendario",
+                        "Caramello Filtrello": "Legendario",
+                        "Pipi Potato": "Legendario",
+                        "Strawberelli Flamingelli": "Legendario",
+                        "Cocosini Mama": "Legendario",
+                        "Pandaccini Bananini": "Legendario",
+                        "Pi Pi Watermelon": "Legendario",
+                        "Signore Carapace": "Legendario",
+                        "Sigma Boy": "Legendario",
+                        "Frigo Camelo": "Mítico",
+                        "Sigma Girl": "Mítico",
+                        "Orangutini Ananassini": "Mítico",
+                        "Rhino Toasterino": "Mítico",
+                        "Bombardiro Crocodilo": "Mítico",
+                        "Bruto Gialutto": "Mítico",
+                        "Spioniro Golubiro": "Mítico",
+                        "Bombombini Gusini": "Mítico",
+                        "Zibra Zubra Zibralini": "Mítico",
+                        "Tigrilini Watermelini": "Mítico",
+                        "Avocadorilla": "Mítico",
+                        "Cavallo Virtuoso": "Mítico",
+                        "Gorillo Subwoofero": "Mítico",
+                        "Gorillo Watermelondrillo": "Mítico",
+                        "Tob Tobi Tobi": "Mítico",
+                        "Lerulerulerule": "Mítico",
+                        "Ganganzelli Trulala": "Mítico",
+                        "Te Te Te Sahur": "Mítico",
+                        "Rhino Helicopterino": "Mítico",
+                        "Tracoducotulu Delapeladustuz": "Mítico",
+                        "Los Noobinis": "Mítico",
+                        "Carloo": "Mítico",
+                        "Carrotini Brainini": "Mítico",
+                        "Elefanto Frigo": "Mítico",
+                        "Cocofanto Elefanto": "Brainrot God",
+                        "Antonio": "Brainrot God",
+                        "Girafa Celestre": "Brainrot God",
+                        "Gattatino Nyanino": "Brainrot God",
+                        "Chihuanini Taconini": "Brainrot God",
+                        "Tralalero Tralala": "Brainrot God",
                         "Matteo": "Epic",
                         "Los Crocodillitos": "Epic",
                         "Tigroligre Frutonni": "Epic",
@@ -978,6 +978,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
