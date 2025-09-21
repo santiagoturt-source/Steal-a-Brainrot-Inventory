@@ -7,7 +7,6 @@ import uuid
 import time
 import os, json
 import unicodedata
-from typing import Iterable
 
 TOKEN_FILE = "session_token.json"
 
@@ -153,48 +152,28 @@ def normalize_text(value: str) -> str:
     without_accents = "".join(ch for ch in normalized if not unicodedata.combining(ch))
     return without_accents.lower()
 
-class SearchableOption:
-    """Representa una opción de selección con un texto de búsqueda normalizado."""
-
-    __slots__ = ("label", "payload", "_search_text")
-
-    def __init__(self, label: str, search_terms: Iterable[str], payload=None):
-        self.label = label
-        self.payload = payload if payload is not None else label
-        normalized_terms = []
-        for term in search_terms:
-            normalized = normalize_text(term)
-            if normalized:
-                normalized_terms.append(normalized)
-        if not normalized_terms:
-            fallback = normalize_text(label)
-            if fallback:
-                normalized_terms.append(fallback)
-        # Unir tokens únicos manteniendo el orden para favorecer coincidencias por nombre.
-        deduped_terms = list(dict.fromkeys(normalized_terms))
-        self._search_text = " ".join(deduped_terms) if deduped_terms else label
-
-    def __str__(self) -> str:  # pragma: no cover - streamlit utiliza este valor internamente
-        return self._search_text
+SEARCH_TOKEN = "\u2063"  # invisible separator to embed normalized search helpers
 
 
-def make_searchable_option(label: str, *search_terms: str, value=None) -> SearchableOption:
-    """Crea una opción seleccionable con términos de búsqueda normalizados."""
+def make_searchable_option(label: str, *search_terms: str) -> str:
+    """Embed normalized search tokens into a label without altering its visual rendering."""
     terms = search_terms or (label,)
-    return SearchableOption(label, terms, payload=value)
+    normalized_terms = []
+    for term in terms:
+        normalized = normalize_text(term)
+        if normalized:
+            normalized_terms.append(normalized)
+    if not normalized_terms:
+        return label
+    search_blob = SEARCH_TOKEN.join(normalized_terms)
+    return f"{label}{SEARCH_TOKEN}{search_blob}"
 
 
-def option_display(option) -> str:
-    """Devuelve la etiqueta visible para cualquier opción de selección."""
-    if isinstance(option, SearchableOption):
-        return option.label
+def option_display(option: str) -> str:
+    """Return the visual label for a select option that may contain hidden search helpers."""
+    if isinstance(option, str) and SEARCH_TOKEN in option:
+        return option.split(SEARCH_TOKEN)[0]
     return option
-
-
-def option_payload(option):
-    """Devuelve el valor asociado a una opción seleccionable."""
-    if isinstance(option, SearchableOption):
-        return option.payload
 
 
 
@@ -929,7 +908,7 @@ else:
 
 
                     opciones_personajes = ["(ninguno)"] + [
-                        make_searchable_option(
+                       make_searchable_option(
                             f"{nombre} — {format_num(data['income'])}",
                             nombre,
                             data.get("quality"),
@@ -1092,18 +1071,22 @@ else:
                                     parts.append(f"Mutaciones: {', '.join(b['Mutaciones'])}")
                                 return " | ".join(parts), b["id"]
 
-                            brainrot_options = []
+                            brainrot_entries = []
                             for brainrot in brainrots:
                                 label, brainrot_id = brainrot_label(brainrot)
-                                brainrot_options.append(
-                                    make_searchable_option(
-                                        label,
-                                        brainrot.get("Brainrot", ""),
-                                        value=brainrot_id,
-                                    )
+                                option_value = make_searchable_option(
+                                    label,
+                                    label,
+                                    brainrot.get("Brainrot", ""),
+                                    brainrot.get("Cuenta", ""),
+                                    brainrot.get("Calidad", ""),
+                                    brainrot.get("Color", ""),
+                                    ", ".join(brainrot.get("Mutaciones", [])),
                                 )
-                                
-                            opciones_brainrots = ["(ninguno)"] + brainrot_options
+                                brainrot_entries.append((option_value, label, brainrot_id))
+
+                            opciones_brainrots = ["(ninguno)"] + [entry[0] for entry in brainrot_entries]
+                            ids_map = {entry[1]: entry[2] for entry in brainrot_entries}
 
                             # Borrar
                             to_delete_option = st.selectbox(
@@ -1113,7 +1096,7 @@ else:
                             )
                             to_delete = option_display(to_delete_option)
                             if st.button("🗑️ Borrar Brainrot") and to_delete != "(ninguno)":
-                                brainrot_id = option_payload(to_delete_option)
+                                brainrot_id = ids_map[to_delete]
                                 brainrots = [b for b in brainrots if b["id"] != brainrot_id]
                                 save_data(uid, perfil_actual, brainrots, cuentas)
                                 st.success("Brainrot borrado.")
@@ -1128,7 +1111,7 @@ else:
                             mover = option_display(mover_option)
                             nueva_cuenta_sel = st.selectbox("Mover a cuenta", ["(ninguna)"] + cuentas)
                             if st.button("🔄 Mover Brainrot") and mover != "(ninguno)" and nueva_cuenta_sel != "(ninguna)":
-                                brainrot_id = option_payload(mover_option)
+                                brainrot_id = ids_map[mover]
                                 for b in brainrots:
                                     if b["id"] == brainrot_id:
                                         b["Cuenta"] = nueva_cuenta_sel
@@ -1160,8 +1143,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-
 
 
 
