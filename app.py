@@ -77,10 +77,8 @@ RARITY_BADGE_STYLE = """
 
 
 def ensure_rarity_styles():
-    """Injecta los estilos de las insignias de rareza una sola vez por sesión."""
-    if not st.session_state.get("_rarity_styles_injected"):
-        st.markdown(RARITY_BADGE_STYLE, unsafe_allow_html=True)
-        st.session_state["_rarity_styles_injected"] = True
+    """Injecta los estilos de las insignias de rareza para la tabla HTML."""
+    st.markdown(RARITY_BADGE_STYLE, unsafe_allow_html=True)
 
 
 def rarity_badge_html(rarity: str) -> str:
@@ -984,6 +982,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
