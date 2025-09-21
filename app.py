@@ -636,9 +636,10 @@ else:
     "Extinct Tralalero": 450000,
     "La Cucaracha": 475000,
     "Los Tralaleritos": 500000,
-    "La Karkerkar Combinasion": 600000,
     "Los Spyderinis": 550000,
     "Guerriro Digitale": 550000,
+    "La Karkerkar Combinasion": 600000,
+    "Extinct Matteo": 625000,
     "Las Tralaleritas": 650000,
     "Job Job Job Sahur": 700000,
     "Las Vaquitas Saturnitas": 750000,
@@ -1143,6 +1144,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
