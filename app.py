@@ -538,6 +538,7 @@ else:
     "Los Chicleteiras": 7000000,
     "67": 7500000,
     "La Grande Combinasion": 10000000,
+    "Mariachi Corazoni": 12500000,
     "Los Combinasionas": 15000000,
     "Nuclearo Dinossauro": 15000000,
     "Tacorita Bicicleta": 16500000,
@@ -980,6 +981,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
