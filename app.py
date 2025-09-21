@@ -121,11 +121,11 @@ COLOR_BADGE_STYLE = """
     color: #3d0c02;
 }
 .color-badge.color-galaxy {
-    background: radial-gradient(circle at top left, #6d5dfc, #320d6d);
+    background: radial-gradient(#77206F, #D870CD);
     color: #f2e9ff;
 }
 .color-badge.color-rainbow {
-    background-image: linear-gradient(135deg, #00ff00, #ee82ee);
+    background-image: linear-gradient(135deg, #83E28E, #E49EDD);
     color: #ffffff;
     text-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
 }
@@ -1057,6 +1057,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
