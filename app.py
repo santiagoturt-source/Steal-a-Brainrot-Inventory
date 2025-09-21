@@ -178,6 +178,12 @@ class SearchableOption:
         return self._search_text
 
 
+def make_searchable_option(label: str, *search_terms: str, value=None) -> SearchableOption:
+    """Crea una opción seleccionable con términos de búsqueda normalizados."""
+    terms = search_terms or (label,)
+    return SearchableOption(label, terms, payload=value)
+
+
 def option_display(option) -> str:
     """Devuelve la etiqueta visible para cualquier opción de selección."""
     if isinstance(option, SearchableOption):
@@ -923,7 +929,7 @@ else:
 
 
                     opciones_personajes = ["(ninguno)"] + [
-                       make_searchable_option(
+                        make_searchable_option(
                             f"{nombre} — {format_num(data['income'])}",
                             nombre,
                             data.get("quality"),
@@ -1154,6 +1160,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
