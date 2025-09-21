@@ -511,7 +511,7 @@ else:
     "La Vacca Saturno Saturnita": 300000,
     "Trenostruzzo Turbo 4000": 310000,
     "Torrtuginni Dragonfrutini": 350000,
-    "Sammyini Spyderini": 350000,
+    "Sammyini Spyderini": 325000,
     "Dul Dul Dul": 375000,
     "Blackhole Goat": 400000,
     "Chachechi": 400000,
@@ -982,6 +982,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
