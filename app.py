@@ -751,9 +751,9 @@ else:
 
                     COLORES = {
     "-": 0,
-    "🟡 Gold": 1.25,
-    "💎 Diamond": 1.5,
-    "🩸 Bloodrot": 2,
+    "🟡 Dorado": 1.25,
+    "💎 Diamante": 1.5,
+    "🩸 Luna Roja": 2,
     "🍬 Candy": 4,
     "🌋 Lava": 6,
     "🌌 Galaxy": 7,
@@ -980,6 +980,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
