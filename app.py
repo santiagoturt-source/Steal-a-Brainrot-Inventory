@@ -570,7 +570,7 @@ else:
                     }
 
                     BRAINROT_RARITIES = {
-                        "Noobini Pizzanini": "Common",
+                        "Noobini Pizzanini": "OG",
                         "Lirilì Larilà": "Common",
                         "Tim Cheese": "Common",
                         "Fluriflura": "Common",
@@ -988,6 +988,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
