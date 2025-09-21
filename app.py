@@ -273,8 +273,14 @@ def confirm_deletion(state_key, message):
             return confirmed_value
     with col_cancel:
         if st.button("❌ Cancelar", key=f"{state_key}_cancel"):
-            st.session_state.pop(state_key, None)
+               st.session_state.pop(state_key, None)
     return confirmed_value
+
+
+def get_inventory_filters(perfil):
+    """Recupera (o inicializa) las preferencias de filtros para el perfil indicado."""
+    filtros_por_perfil = st.session_state.setdefault("inventario_filtros", {})
+    return filtros_por_perfil.setdefault(perfil, {"orden": "Total ↓", "cuenta": "Todas"})
 
 # ============================
 # FUNCIONES DE AUTENTICACIÓN
@@ -913,38 +919,51 @@ else:
 
                     if brainrots:
                         df = pd.DataFrame(brainrots)
-                        
-                        if "orden" not in st.session_state:
-                            st.session_state["orden"] = "Total ↓"
-                            
+
+                        filtros = get_inventory_filters(perfil_actual)
+
+                        opciones_orden = ["Total ↓", "Total ↑", "Cuenta", "Brainrot", "Cuenta + Total ↓"]
+                        orden_key = f"orden_{perfil_actual}"
+                        valor_orden_inicial = filtros.get("orden", "Total ↓")
+                        if orden_key not in st.session_state:
+                            st.session_state[orden_key] = valor_orden_inicial
+                        if st.session_state[orden_key] not in opciones_orden:
+                            st.session_state[orden_key] = opciones_orden[0]
+
                         orden = st.selectbox(
                             "Ordenar por",
-                            ["Total ↓", "Total ↑", "Cuenta", "Brainrot", "Cuenta + Total ↓"],
-                            key="orden"
+                            opciones_orden,
+                            key=orden_key
                         )
-                        
-                        if "cuenta_filtro" not in st.session_state:
-                            st.session_state["cuenta_filtro"] = "Todas"
-                            
+                        filtros["orden"] = orden
+
                         cuentas_filtro = ["Todas"] + sorted(df["Cuenta"].unique().tolist())
+                        cuenta_key = f"cuenta_filtro_{perfil_actual}"
+                        valor_cuenta_inicial = filtros.get("cuenta", "Todas")
+                        if cuenta_key not in st.session_state:
+                            st.session_state[cuenta_key] = valor_cuenta_inicial
+                        if st.session_state[cuenta_key] not in cuentas_filtro:
+                            st.session_state[cuenta_key] = "Todas"
+
                         cuenta_filtro = st.selectbox(
                             "Filtrar por Cuenta",
                             cuentas_filtro,
-                            key="cuenta_filtro"
+                            key=cuenta_key
                         )
+                        filtros["cuenta"] = cuenta_filtro
 
-                        if st.session_state["cuenta_filtro"] != "Todas":
-                            df = df[df["Cuenta"] == st.session_state["cuenta_filtro"]]
-                            
-                        if st.session_state["orden"] == "Total ↓":
+                        if cuenta_filtro != "Todas":
+                            df = df[df["Cuenta"] == cuenta_filtro]
+
+                        if orden == "Total ↓":
                             df = df.sort_values(by="Total", ascending=False)
-                        elif st.session_state["orden"] == "Total ↑":
+                        elif orden == "Total ↑":
                             df = df.sort_values(by="Total", ascending=True)
-                        elif st.session_state["orden"] == "Cuenta":
+                        elif orden == "Cuenta":
                             df = df.sort_values(by="Cuenta")
-                        elif st.session_state["orden"] == "Brainrot":
+                        elif orden == "Brainrot":
                             df = df.sort_values(by="Brainrot")
-                        elif st.session_state["orden"] == "Cuenta + Total ↓":
+                        elif orden == "Cuenta + Total ↓":
                             df = df.sort_values(by=["Cuenta", "Total"], ascending=[True, False])
                             
                         df["Total"] = df["Total"].apply(format_num)
@@ -1057,6 +1076,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
