@@ -6,6 +6,7 @@ import pandas as pd
 import uuid
 import time
 import os, json
+import unicodedata
 
 TOKEN_FILE = "session_token.json"
 
@@ -141,6 +142,15 @@ def ensure_rarity_styles():
 def ensure_color_styles():
     """Injecta los estilos de las insignias de color para la tabla HTML."""
     st.markdown(COLOR_BADGE_STYLE, unsafe_allow_html=True)
+
+
+def normalize_text(value: str) -> str:
+    """Normaliza un texto para búsquedas insensibles a mayúsculas y acentos."""
+    if not value:
+        return ""
+    normalized = unicodedata.normalize("NFKD", value)
+    without_accents = "".join(ch for ch in normalized if not unicodedata.combining(ch))
+    return without_accents.lower()
 
 
 def rarity_badge_html(rarity: str) -> str:
@@ -872,13 +882,32 @@ else:
     "🍓 Fresa": 8,
 }
 
+                    busqueda_brainrot = st.text_input(
+                        "🔍 Buscar brainrot",
+                        key=f"busqueda_brainrot_{perfil_actual}"
+                    ).strip()
+
+                    brainrots_disponibles = list(BRAINROTS.items())
+                    if busqueda_brainrot:
+                        termino_busqueda = normalize_text(busqueda_brainrot)
+                        brainrots_disponibles = [
+                            (nombre, data)
+                            for nombre, data in brainrots_disponibles
+                            if termino_busqueda in normalize_text(nombre)
+                        ]
+
+                    opciones_personajes = ["(ninguno)"] + [
+                        f"{nombre} — {format_num(data['income'])}"
+                        for nombre, data in brainrots_disponibles
+                    ]
+
+                    if busqueda_brainrot and len(opciones_personajes) == 1:
+                        st.info("No se encontraron brainrots que coincidan con la búsqueda.")
+
                     personaje = st.selectbox(
                         "Selecciona un Brainrot",
-                        ["(ninguno)"]
-                        + [
-                            f"{nombre} — {format_num(data['income'])}"
-                            for nombre, data in BRAINROTS.items()
-                        ]
+                        opciones_personajes,
+                        key=f"seleccion_brainrot_{perfil_actual}"
                     )
 
                     color = st.selectbox("Color", list(COLORES.keys()))
@@ -1014,6 +1043,23 @@ else:
                         with st.container(border=True):
                             st.markdown("### 🗑️ 🔄 Borrar / Mover Brainrots")
 
+                            busqueda_inventario = st.text_input(
+                                "🔍 Buscar en inventario",
+                                key=f"busqueda_inventario_{perfil_actual}"
+                            ).strip()
+
+                            brainrots_para_gestion = brainrots
+                            if busqueda_inventario:
+                                termino_inventario = normalize_text(busqueda_inventario)
+                                brainrots_para_gestion = [
+                                    b
+                                    for b in brainrots
+                                    if termino_inventario in normalize_text(b.get("Brainrot", ""))
+                                ]
+
+                            if busqueda_inventario and not brainrots_para_gestion:
+                                st.info("No hay brainrots en el inventario que coincidan con la búsqueda.")
+
                             def brainrot_label(b):
                                 parts = [
                                     f"{b['Brainrot']}",
@@ -1028,17 +1074,18 @@ else:
                                     parts.append(f"Mutaciones: {', '.join(b['Mutaciones'])}")
                                 return " | ".join(parts), b["id"]
 
-                            opciones_brainrots = ["(ninguno)"] + [brainrot_label(b)[0] for b in brainrots]
-                            ids_map = {brainrot_label(b)[0]: brainrot_label(b)[1] for b in brainrots}
+                            brainrot_labels = [brainrot_label(b) for b in brainrots_para_gestion]
+                            opciones_brainrots = ["(ninguno)"] + [label for label, _ in brainrot_labels]
+                            ids_map = {label: brainrot_id for label, brainrot_id in brainrot_labels}
 
                             # Borrar
                             to_delete = st.selectbox("Selecciona un Brainrot para borrar", opciones_brainrots)
                             if st.button("🗑️ Borrar Brainrot") and to_delete != "(ninguno)":
-                                brainrot_id = ids_map[to_delete]
-                                brainrots = [b for b in brainrots if b["id"] != brainrot_id]
-                                save_data(uid, perfil_actual, brainrots, cuentas)
-                                st.success("Brainrot borrado.")
-                                st.rerun()
+                                  brainrot_id = ids_map[to_delete]
+                                  brainrots = [b for b in brainrots if b["id"] != brainrot_id]
+                                  save_data(uid, perfil_actual, brainrots, cuentas)
+                                  st.success("Brainrot borrado.")
+                                  st.rerun()
 
                             # Mover
                             mover = st.selectbox("Selecciona un Brainrot para mover", opciones_brainrots)
@@ -1051,8 +1098,8 @@ else:
                                 save_data(uid, perfil_actual, brainrots, cuentas)
                                 st.success(f"Brainrot movido a cuenta '{nueva_cuenta_sel}'.")
                                 st.rerun()
-            else:
-                st.info("Debes seleccionar un perfil para ver tu inventario")
+                    else:
+                        st.info("Debes seleccionar un perfil para ver tu inventario")
                                 
     with pestañas[2]:
         with st.container(border=True):
@@ -1076,6 +1123,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
