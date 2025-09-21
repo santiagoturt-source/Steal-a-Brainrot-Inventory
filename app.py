@@ -125,7 +125,7 @@ COLOR_BADGE_STYLE = """
     color: #f2e9ff;
 }
 .color-badge.color-rainbow {
-    background-image: linear-gradient(135deg, #00ff00, #d400ff);
+    background-image: linear-gradient(135deg, #00ff00, #ff00ea);
     color: #ffffff;
     text-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
 }
@@ -1057,6 +1057,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
