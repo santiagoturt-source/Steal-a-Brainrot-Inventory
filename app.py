@@ -558,19 +558,9 @@ else:
     "Strawberry Elephant": 300000000,
 }
     
-    
-                    RARITY_COLORS = {
-                        "Common": "#2ecc71",
-                        "Rare": "#3498db",
-                        "Epic": "#9b59b6",
-                        "Legendary": "#f1c40f",
-                        "Mythic": "#e74c3c",
-                        "Brainrot God": "linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)",
-                        "Secret": "#000000",
-                    }
 
                     BRAINROT_RARITIES = {
-                        "Noobini Pizzanini": "OG",
+                        "Noobini Pizzanini": "Common",
                         "Lirilì Larilà": "Common",
                         "Tim Cheese": "Common",
                         "Fluriflura": "Common",
@@ -988,6 +978,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 
 
 
